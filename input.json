@@ -1,0 +1,53 @@
+
+{
+    "input": {
+        "dataset_1" : {
+            "csv_path" :  "data/ccer/D2/abt.csv",
+            "separator" : "|",
+            "id_column" : "id",
+            "name" : "abt"                    
+        },
+        "dataset_2" : {
+            "csv_path" :  "data/ccer/D2/buy.csv",
+            "separator" : "|",
+            "id_column" : "id",
+            "name" : "buy"                    
+        },
+        "ground_truth" : {
+            "csv_path" :  "data/ccer/D2/gt.csv",
+            "separator" : "|"
+        }                
+    },
+    "parameters" : {
+        "workflow": "BlockingBasedWorkflow",
+        "block_building": {
+            "method" : "QGramsBlocking",
+            "attributes_1": ["name"],
+            "attributes_2": ["name"],              
+            "params": {
+                "qgrams" : 5
+            }
+        },
+        "block_cleaning": {
+            "method": "BlockFiltering",
+            "params": {"ratio": 0.7}
+        },
+        "comparison_cleaning": {
+            "method": "WeightedNodePruning"
+        },
+        "entity_matching": { 
+            "method": "EntityMatching",
+            "params": {
+                "metric" : "dice",
+                "tokenizer": "white_space_tokenizer"
+            }
+        },
+        "clustering": {
+            "method": "KiralyMSMApproximateClustering",
+            "similarity_threshold": 0.2
+        }
+
+    
+    }
+
+}
