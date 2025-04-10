@@ -2,11 +2,36 @@ import json
 import sys
 import traceback
 from utils.mclient import MinioClient
+from pyjedai_utils import *
+from blocking_based import get_BlockingBasedWorkflow
+
+
+
 
 # Here you may define the imports your tool needs...
 # import pandas as pd
 # import numpy as np
 # ...
+
+
+
+# def prep_df(input_file, separator, engine, minio):
+#     """
+#     Prepare DataFrame from input file.
+#     """
+#     if input_file.startswith('s3://'):
+#         bucket, key = input_file.replace('s3://', '').split('/', 1)
+#         client = Minio(minio['endpoint_url'], access_key=minio['id'], secret_key=minio['key'])
+#         df = pd.read_csv(client.get_object(bucket, key), sep=separator, na_filter=False)
+#     else:
+#         df = pd.read_csv(input_file, sep=separator, na_filter=False)
+#     return df
+
+            
+        
+    
+    
+    
 
 def run(json):
 
@@ -52,6 +77,70 @@ def run(json):
         # as they handle input paths provided by STELAR API appropriately. (S3 like paths)
         ###############################################################################
 
+        
+
+
+
+        """ 
+        JSON ARCHITECTURE
+        
+        
+        {
+            "input": {
+                "dataset_1" : {
+                    "csv_path" : ,
+                    "separator" : ,
+                    "id_column" : ,
+
+                    (optional)
+                    "name" : ,
+                    "attributes" : 
+                    
+                },
+                (optional)
+                "dataset_2" : {
+                    "csv_path" : ,
+                    "separator" : ,
+                    "id_column" : ,
+                    
+                    (optional)
+                    "name" : ,
+                    "attributes" : 
+                }
+                (optional)
+                "ground_truth" : {
+                    "csv_path" : ,
+                    "separator" : ,
+                }                
+                
+            },
+            "parameters": {
+                "workflow": "BlockingBasedWorkflow" / "EmbeddingsNNWorkflow",
+                "block_building" : {
+                    "method": "StandardBlocking", 
+                    "params" : {},
+                    "attributes_1": ,
+                    attributes_2"
+                }
+                "block_filtering" : []
+                "comparison_cleaning": {}
+                "entity_matching": {}
+                "clustering": {}
+                                    
+                    
+                
+                
+            }
+            
+            
+            
+        }
+        
+        
+        
+        
+        """
+
 
         """
         Acquire tool specific parameters from json['parameters] which was given by the 
@@ -95,8 +184,30 @@ def run(json):
             x = json['parameters']['x']
             y = json['parameters']['y']
         """        
-        x = json['parameters']['x'] 
-        y = json['parameters']['y']
+        
+        input = json['input']
+        params = json['parameters']
+        
+        
+        data = load_input(input=input)
+        
+
+        if params["workflow"] == "BlockingBasedWorkflow":
+            workflow = get_BlockingBasedWorkflow(data, params)
+        else: 
+            workflow = get_EmbeddingsNNWorkFlow(data,params)
+
+        workflow.run(data, verbose=True, workflow_step_tqdm_disable=False)
+
+
+        # else: 
+        #     workflow = get_EmbeddingsNNWorkflow(data, params)
+
+
+
+        
+        # x = json['parameters']['x'] 
+        # y = json['parameters']['y']
 
 
         """
@@ -108,7 +219,7 @@ def run(json):
         """
 
         ##### Tool Logic #####
-        z=x+y
+        # z=x+y
 
         """
             This json should contain any output of your tool that you consider valuable. Metrics field affects
@@ -136,7 +247,7 @@ def run(json):
                 'message': 'Tool Executed Succesfully',
                 'outputs': {}, 
                 'metrics': { 
-                    'z': z, 
+                    'z': 1, 
                 }, 
                 'status': "success",
               }
