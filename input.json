@@ -1,24 +1,36 @@
 
 {
-    "input": {
+    "minio": {
+        "id" : "",
+        "key" : "",
+        "skey": "",
+        "endpoint_url": ""
+    },
+    "inputs": {
+        "dataset_1" : [
+            "klms-bucket/raw-data/abt.csv"	
+        ],
+        "dataset_2" : [
+            "s3://klms-bucket/raw-data/buy.csv"	
+        ],
+        "ground_truth" : [
+            "s3://klms-bucket/raw-data/gt.csv"
+        ]
+    },
+    "parameters" : {
         "dataset_1" : {
-            "csv_path" :  "data/ccer/D2/abt.csv",
             "separator" : "|",
-            "id_column" : "id",
+            "id_column_name" : "id",
             "name" : "abt"                    
         },
         "dataset_2" : {
-            "csv_path" :  "data/ccer/D2/buy.csv",
             "separator" : "|",
-            "id_column" : "id",
+            "id_column_name" : "id",
             "name" : "buy"                    
         },
         "ground_truth" : {
-            "csv_path" :  "data/ccer/D2/gt.csv",
             "separator" : "|"
-        }                
-    },
-    "parameters" : {
+        },                
         "workflow": "BlockingBasedWorkflow",
         "block_building": {
             "method" : "QGramsBlocking",
@@ -46,8 +58,5 @@
             "method": "KiralyMSMApproximateClustering",
             "similarity_threshold": 0.2
         }
-
-    
     }
-
 }
