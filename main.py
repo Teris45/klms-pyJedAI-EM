@@ -75,13 +75,11 @@ def run(json):
         minio_skey = json['minio']['skey']
         minio_endpoint = json['minio']['endpoint_url']
         
-        mc = MinioClient(minio_id, minio_key, minio_skey, minio_endpoint)
+        mc = MinioClient(access_key=minio_id, secret_key= minio_key, session_token=minio_skey, endpoint=minio_endpoint)
 
         # It is strongly suggested to use the get_object and put_object methods of the MinioClient
         # as they handle input paths provided by STELAR API appropriately. (S3 like paths)
         ###############################################################################
-
-        
 
 
 
@@ -94,7 +92,7 @@ def run(json):
                 "dataset_1" : {
                     "csv_path" : ,
                     "separator" : ,
-                    "id_column" : ,
+                    "id_column_name" : ,
 
                     (optional)
                     "name" : ,
@@ -105,7 +103,7 @@ def run(json):
                 "dataset_2" : {
                     "csv_path" : ,
                     "separator" : ,
-                    "id_column" : ,
+                    "id_column_name" : ,
                     
                     (optional)
                     "name" : ,
@@ -189,11 +187,11 @@ def run(json):
             y = json['parameters']['y']
         """        
         
-        input = json['input']
+        input = json['inputs']
         params = json['parameters']
         
         
-        data = load_input(input=input)
+        data = load_inputs(mc = mc, input=input, parameters=params)
         
 
         if params["workflow"] == "BlockingBasedWorkflow":
@@ -201,8 +199,10 @@ def run(json):
         else: 
             workflow = get_EmbeddingsNNWorkFlow(data,params)
 
-        workflow.run(data, verbose=True, workflow_step_tqdm_disable=False)
 
+        workflow.run(data, verbose=True, workflow_step_tqdm_disable=False)
+        print(workflow.export_pairs())
+        print(workflow.to_df())
 
         # else: 
         #     workflow = get_EmbeddingsNNWorkflow(data, params)

@@ -8,6 +8,14 @@ from pyjedai.matching import *
 from pyjedai.comparison_cleaning import *
 import inspect
 from global_dict import *
+from utils.mclient import MinioClient
+
+
+required_keys = {
+    'ground_truth': ['separator'],
+    'other': ['separator', 'id_column_name']
+}
+
 
 
 def get_parameters_of_class(method) -> None:
@@ -21,14 +29,7 @@ def get_parameters_of_class(method) -> None:
     param_names = [name for name in parameters if name != 'self']
     return param_names
 
-
-
 def check_dataset(dataset: dict, dataset_name: str) -> None:
-    required_keys = {
-        'ground_truth': ['csv_path', 'separator'],
-        'other': ['csv_path', 'separator', 'id_column']
-    }
-
     # Get the appropriate set of required keys
     keys_required = required_keys.get(dataset_name.lower(), required_keys['other'])
 
@@ -39,17 +40,61 @@ def check_dataset(dataset: dict, dataset_name: str) -> None:
         raise Exception(f"On {dataset_name} {missing_keys} was not given")
 
 # Check if input was correctly provided
-def check_input(input: dict) -> None:
+def check_input(mc: MinioClient, input: dict, parameters: dict) -> None:
     if 'dataset_1' not in input:
         raise Exception("No dataset_1 was given")
     
+    
+    data_dict = { 
+            "id_column_name_1": None,
+            "attributes_1" : None,
+            "dataset_name_1" : None,
+            "dataset_2" : None,
+            "id_column_name_2" : None,
+            "attributes_2" : None,
+            "dataset_name_2" : None,
+            "ground_truth" : None,
+            "skip_ground_truth_processing" : True 
+            }
+    
+    
+    
+    
     for dataset in ['dataset_1', 'dataset_2', 'ground_truth']:
-        if dataset in input:
-            check_dataset(input[dataset], dataset)
+        if dataset in input and dataset not in parameters:
+            raise Exception(f"Must provide required_keys in parameters for {dataset} : {required_keys}")
+        elif dataset in input and dataset in parameters: 
+            check_dataset(parameters[dataset], dataset)
+            mc.get_object(s3_path=input[dataset][0], local_path=f"local/{dataset}.csv")
+            
+            df = pd.read_csv(f"local/{dataset}.csv", sep=parameters[dataset], engine='python', na_filter=False)
+            data_dict[dataset] = df.copy()
+            
+            if dataset != 'ground_truth': 
+                for key in parameters[dataset]:
+                    index = dataset.split('_', 1)[1]
+                    data_dict_key = f'{key}_{index}'
+                    if data_dict_key in data_dict and parameters[dataset][data_dict_key]:
+                        print(f"{dataset} {data_dict_key} {type(parameters[dataset][data_dict_key])}")
+                        
+                        # if "attributes" in data_dict_key and isinstance(parameters[dataset]): 
+                        # data_dict[f'{key}_{index}'] = 
+                         
+                    
+                    
+            
+            
+        
         
 
-def load_input(input: dict) -> Data:
-    check_input(input)
+
+def load_inputs(mc : MinioClient, input: dict, parameters: dict) -> Data:
+    data : Data = check_input(mc, input, parameters)
+
+    
+    
+    exit(10)
+
 
     dataset_1 = input['dataset_1']
     d1 = pd.read_csv(dataset_1['csv_path'], 
