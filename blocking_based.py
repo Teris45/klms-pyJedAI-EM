@@ -7,6 +7,8 @@ from pyjedai.matching import *
 from pyjedai.comparison_cleaning import *
 from pyjedai_utils import *
 
+import json
+
 def get_BlockingBasedWorkflow(data: Data, parameters: dict) -> BlockingBasedWorkFlow:
 
     required_keys = [
@@ -20,15 +22,12 @@ def get_BlockingBasedWorkflow(data: Data, parameters: dict) -> BlockingBasedWork
         "clustering"
         ]
     
-    print(f"""" 
-          
-          Parameters given as : {parameters}
-
-          The parameters will be checked and processed to input them correctly to pyJedAI BlockingBased Workflow.
-          If you give no input parameters, best workflow will be used (read the docs).
-          If you skip one or both of the required parameters: {required_keys}, the defaults will be used.
-          Read the docs and see how each function is called.
-          """)
+    print(f"""
+Parameters given as : {json.dumps(parameters, indent=4)}
+The parameters will be checked and processed to input them correctly to pyJedAI BlockingBased Workflow.\nIf you give no input parameters, best workflow will be used (read the docs).
+If you skip one or both of the required parameters: {required_keys}, the defaults will be used.
+Read the docs and see how each function is called.
+""")
     
     
     new_parameters = {}
@@ -78,8 +77,8 @@ def get_BlockingBasedWorkflow(data: Data, parameters: dict) -> BlockingBasedWork
             new_parameters['name'] = w.name
     
         print(f""" 
-                After processing input...
-                The workflow-parameters are : {new_parameters} 
+After processing input...
+The workflow-parameters are : {json.dumps(dict_to_str(new_parameters), indent=4)} 
         """)
 
         return w
@@ -95,8 +94,8 @@ def get_BlockingBasedWorkflow(data: Data, parameters: dict) -> BlockingBasedWork
         new_parameters['name'] = parameters['name']
     
     print(f""" 
-          After processing input...
-          The workflow-parameters are : {new_parameters} 
+After processing input...
+The workflow-parameters are : {json.dumps(dict_to_str(new_parameters), indent=4)} 
           """)
     
     return BlockingBasedWorkFlow(**new_parameters)

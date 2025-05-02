@@ -4,8 +4,7 @@ import traceback
 from utils.mclient import MinioClient
 from pyjedai_utils import *
 from blocking_based import get_BlockingBasedWorkflow
-
-
+import time 
 from pyjedai_utils import *
 from blocking_based import get_BlockingBasedWorkflow
 
@@ -190,40 +189,91 @@ def run(json):
         input = json['inputs']
         params = json['parameters']
         
+        for key in ['dataset_1', 'dataset_2', "ground_truth"]:
+            if key not in input and key in params:
+                del params[key]
+                
         
-        data = load_inputs(mc = mc, input=input, parameters=params)
-        
+        data = load_input(mc = mc, input=input, parameters=params)
 
         if params["workflow"] == "BlockingBasedWorkflow":
             workflow = get_BlockingBasedWorkflow(data, params)
-        else: 
+        elif params["workflow"] == "EmbeddingsNNWorkFlow": 
+            params = load_embeddings(mc, input, params) 
             workflow = get_EmbeddingsNNWorkFlow(data,params)
 
-
         workflow.run(data, verbose=True, workflow_step_tqdm_disable=False)
-        print(workflow.export_pairs())
-        print(workflow.to_df())
-
-        # else: 
-        #     workflow = get_EmbeddingsNNWorkflow(data, params)
+        execution_time = workflow.workflow_exec_time
 
 
-
+        # Handle Output
+        pairs_df = workflow.export_pairs()
+        metrics_df = workflow.to_df()
+        number_of_pairs = pairs_df.shape[0] if not pairs_df.empty else 0
         
-        # x = json['parameters']['x'] 
-        # y = json['parameters']['y']
 
+        print(f"""
+            \nPrinting Final Pairs : {workflow.final_pairs}
+        
+            """)
+        
+        metrics_dict = { 
+            'total_execution_time': execution_time, 
+            'total_pairs' : number_of_pairs,
+        }
+        
+        if data.ground_truth is not None:
+            metrics_dict['F1 %'], metrics_dict['Precision %'], metrics_dict['Recall %'] = workflow.get_final_scores()
+        
+        
+        print(f"""
+            \nPrinting Final Metrics : {metrics_dict}
+        
+        """)
+        
+        outputs_dict = {}
+        if 'outputs' in json: 
+            outputs = json['outputs']
+            for key in outputs:
+                output_path : str = None
+                if key == 'metrics':
+                    output_path = f'.local/output/{key}.csv'
+                    metrics_df.to_csv(output_path, index=False)
+                if key == 'pairs':
+                    output_path = f'.local/output/pairs.csv'
+                    pairs_df.to_csv(output_path, index=False)
+                if key == 'entities':
+                    if pairs_df.empty: 
+                        continue
+                    output_path = f'.local/output/entities.csv'
+                    # Step 1: Merge df1 with the mapping on df1.entity == mapping_df.id1
+                    merged1 = pd.merge(data.dataset_1,
+                            pairs_df, left_on=data.id_column_name_1,
+                            right_on='id1', how='left')
+                    d2 = data.dataset_1 if data.is_dirty_er else data.dataset_2
+                    id2 = data.id_column_name_1 if data.is_dirty_er else data.id_column_name_2
+                    # Step 2: Merge the result with df2 on mapping_df.id2 == df2.entity
+                    final_df = pd.merge(merged1, d2, left_on='id2', right_on=id2, how='left', suffixes=('_d1', '_d2'))
+                    # Optional: Drop unnecessary columns
+                    final_df = final_df.drop(columns=['id1', 'id2'])
+                    final_df.to_csv(output_path, index=False)
 
-        """
+                if output_path:
+                    mc.put_object(file_path=output_path, s3_path=outputs[key])
+                    outputs_dict[key] = outputs[key]         
+        
 
-            Here you may implement the execution logic of your tool. At this point you have available:
+        json_output = {
+                'message': 'Tool Executed Succesfully',
+                'metrics': metrics_dict,
+                'status': "success",
+        }
 
-                - Tool specific parameters from json['parameters']
-                - A client for MinIO acccess named 'mc' with method putObject(...) and getObject(...)
-        """
+        json_output['outputs'] = outputs_dict
+        
+        
+        
 
-        ##### Tool Logic #####
-        # z=x+y
 
         """
             This json should contain any output of your tool that you consider valuable. Metrics field affects
@@ -247,16 +297,8 @@ def run(json):
             }
 
         """
-        json= {
-                'message': 'Tool Executed Succesfully',
-                'outputs': {}, 
-                'metrics': { 
-                    'z': 1, 
-                }, 
-                'status': "success",
-              }
 
-        return json
+        return json_output
     except Exception as e:
         print(traceback.format_exc())
         return {

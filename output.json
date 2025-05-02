@@ -1,5 +1,13 @@
 {
-    "message": "An error occurred during data processing.",
-    "error": "Traceback (most recent call last):\n  File \"/home/lefteris/pyjedai2klms/main.py\", line 194, in run\n    data = load_inputs(mc = mc, input=input, parameters=params)\n  File \"/home/lefteris/pyjedai2klms/pyjedai_utils.py\", line 92, in load_inputs\n    data : Data = check_input(mc, input, parameters)\n  File \"/home/lefteris/pyjedai2klms/pyjedai_utils.py\", line 70, in check_input\n    df = pd.read_csv(f\"local/{dataset}.csv\", sep=parameters[dataset], engine='python', na_filter=False)\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/site-packages/pandas/io/parsers/readers.py\", line 948, in read_csv\n    return _read(filepath_or_buffer, kwds)\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/site-packages/pandas/io/parsers/readers.py\", line 611, in _read\n    parser = TextFileReader(filepath_or_buffer, **kwds)\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/site-packages/pandas/io/parsers/readers.py\", line 1448, in __init__\n    self._engine = self._make_engine(f, self.engine)\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/site-packages/pandas/io/parsers/readers.py\", line 1723, in _make_engine\n    return mapping[engine](f, **self.options)\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/site-packages/pandas/io/parsers/python_parser.py\", line 131, in __init__\n    ) = self._infer_columns()\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/site-packages/pandas/io/parsers/python_parser.py\", line 402, in _infer_columns\n    line = self._buffered_line()\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/site-packages/pandas/io/parsers/python_parser.py\", line 635, in _buffered_line\n    return self._next_line()\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/site-packages/pandas/io/parsers/python_parser.py\", line 736, in _next_line\n    orig_line = self._next_iter_line(row_num=self.pos + 1)\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/site-packages/pandas/io/parsers/python_parser.py\", line 800, in _next_iter_line\n    line = next(self.data)\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/site-packages/pandas/io/parsers/python_parser.py\", line 233, in _read\n    pat = re.compile(sep)\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/re.py\", line 252, in compile\n    return _compile(pattern, flags)\n  File \"/home/lefteris/.conda/envs/klms/lib/python3.9/re.py\", line 294, in _compile\n    return _cache[type(pattern), pattern, flags]\nTypeError: unhashable type: 'dict'\n",
-    "status": 500
+    "message": "Tool Executed Succesfully",
+    "metrics": {
+        "total_execution_time": 6.3821022510528564,
+        "total_pairs": 1060
+    },
+    "status": "success",
+    "outputs": {
+        "metrics": "s3://klms-bucket/pyjedai-output/metrics.csv",
+        "pairs": "s3://klms-bucket/pyjedai-output/pairs.csv",
+        "entities": "s3://klms-bucket/pyjedai-output/entities_df.csv"
+    }
 }

@@ -1,6 +1,7 @@
 from pyjedai.datamodel import Data
 import pandas as pd
 from pyjedai.workflow import  EmbeddingsNNWorkFlow
+from pyjedai.vector_based_blocking import EmbeddingsNNBlockBuilding
 from pyjedai.block_building import *
 from pyjedai.block_cleaning import *
 from pyjedai.clustering import *
@@ -8,15 +9,35 @@ from pyjedai.matching import *
 from pyjedai.comparison_cleaning import *
 import inspect
 from global_dict import *
+import json
 from utils.mclient import MinioClient
-
+import copy
 
 required_keys = {
     'ground_truth': ['separator'],
-    'other': ['separator', 'id_column_name']
+    'dataset_1': ['separator', 'id_column_name'],
+    'dataset_2': ['separator', 'id_column_name']
+    
 }
 
 
+def dict_to_str(old_dict: dict): 
+    
+    new_dict = {} 
+    
+    for key in old_dict: 
+        new_dict[key] = copy.deepcopy(old_dict[key])
+        if isinstance(new_dict[key], list): 
+            for item in new_dict[key]: 
+                item['method'] = item['method'].__name__
+        else:
+            new_dict[key]['method'] = new_dict[key]['method'].__name__
+    
+    return new_dict
+    
+    
+    
+    
 
 def get_parameters_of_class(method) -> None:
     # Get the signature of __init__
@@ -31,7 +52,7 @@ def get_parameters_of_class(method) -> None:
 
 def check_dataset(dataset: dict, dataset_name: str) -> None:
     # Get the appropriate set of required keys
-    keys_required = required_keys.get(dataset_name.lower(), required_keys['other'])
+    keys_required = required_keys[dataset_name]
 
     # Find missing keys using set operations
     missing_keys = set(keys_required) - set(dataset.keys())
@@ -40,7 +61,7 @@ def check_dataset(dataset: dict, dataset_name: str) -> None:
         raise Exception(f"On {dataset_name} {missing_keys} was not given")
 
 # Check if input was correctly provided
-def check_input(mc: MinioClient, input: dict, parameters: dict) -> None:
+def load_input(mc: MinioClient, input: dict, parameters: dict) -> Data:
     if 'dataset_1' not in input:
         raise Exception("No dataset_1 was given")
     
@@ -58,112 +79,73 @@ def check_input(mc: MinioClient, input: dict, parameters: dict) -> None:
             }
     
     
-    
-    
     for dataset in ['dataset_1', 'dataset_2', 'ground_truth']:
         if dataset in input and dataset not in parameters:
-            raise Exception(f"Must provide required_keys in parameters for {dataset} : {required_keys}")
+            raise Exception(f"Must provide required_keys in parameters for {dataset} : {required_keys[dataset]}")
         elif dataset in input and dataset in parameters: 
-            check_dataset(parameters[dataset], dataset)
-            mc.get_object(s3_path=input[dataset][0], local_path=f"local/{dataset}.csv")
             
-            df = pd.read_csv(f"local/{dataset}.csv", sep=parameters[dataset], engine='python', na_filter=False)
+            check_dataset(parameters[dataset], dataset)
+            
+
+            mc.get_object(s3_path=input[dataset][0], local_path=f".local/{dataset}.csv")
+            
+            
+            df = pd.read_csv(f".local/{dataset}.csv", sep=parameters[dataset]["separator"], engine='python', na_filter=False)
             data_dict[dataset] = df.copy()
             
             if dataset != 'ground_truth': 
                 for key in parameters[dataset]:
                     index = dataset.split('_', 1)[1]
                     data_dict_key = f'{key}_{index}'
-                    if data_dict_key in data_dict and parameters[dataset][data_dict_key]:
-                        print(f"{dataset} {data_dict_key} {type(parameters[dataset][data_dict_key])}")
+                    if data_dict_key in data_dict and parameters[dataset][key]:
+                        if key == 'attributes' and not isinstance(parameters[dataset]['attributes'],list): 
+                            data_dict[data_dict_key] = list(parameters[dataset][key])
+                        else: 
+                            data_dict[data_dict_key] = parameters[dataset][key]
+            elif dataset == 'ground_truth':
+                data_dict['skip_ground_truth_processing'] = False
+
+
+    if isinstance(data_dict['ground_truth'], pd.DataFrame):
+        columns = data_dict['ground_truth'].columns
+        if isinstance(data_dict['dataset_2'], pd.DataFrame):
+            data_dict['ground_truth'] = data_dict['ground_truth'][
+                data_dict['ground_truth'][columns[0]].isin(data_dict['dataset_1'][data_dict['id_column_name_1']])
+                & 
+                data_dict['ground_truth'][columns[1]].isin(data_dict['dataset_2'][data_dict['id_column_name_2']])
+            ]
+        else: 
+            data_dict['ground_truth'] = data_dict['ground_truth'][
+                data_dict['ground_truth'][columns[0]].isin(data_dict['dataset_1'][data_dict['id_column_name_1']])
+                & 
+                data_dict['ground_truth'][columns[1]].isin(data_dict['dataset_1'][data_dict['id_column_name_1']])
+            ]
+            
+    
+                
+    return Data(**data_dict)                   
                         
-                        # if "attributes" in data_dict_key and isinstance(parameters[dataset]): 
-                        # data_dict[f'{key}_{index}'] = 
-                         
-                    
-                    
-            
-            
-        
-        
 
-
-def load_inputs(mc : MinioClient, input: dict, parameters: dict) -> Data:
-    data : Data = check_input(mc, input, parameters)
-
-    
-    
-    exit(10)
-
-
-    dataset_1 = input['dataset_1']
-    d1 = pd.read_csv(dataset_1['csv_path'], 
-                    sep=dataset_1['separator'],
-                    engine='python', na_filter=False)
-    
-    if 'attributes' not in dataset_1:
-        dataset_1['attributes'] = None
-        
-    if 'name' not in dataset_1:
-        dataset_1['name'] = None
-    
-    if 'ground_truth' in input: 
-        ground_truth = input['ground_truth']
-        gt = pd.read_csv(ground_truth['csv_path'], 
-                sep=ground_truth['separator'],
-                engine='python', na_filter=False)
-        skip_ground_truth_processing = False
-    else:
-        gt = None
-        skip_ground_truth_processing = True
-    
-    if 'dataset_2' in input:
-        dataset_2 = input['dataset_2']
-        d2 = pd.read_csv(dataset_2['csv_path'], 
-                    sep=dataset_2['separator'],
-                    engine='python', na_filter=False)
-
-        if 'attributes' not in dataset_2:
-            dataset_2['attributes'] = None
-            
-        if 'name' not in dataset_2:
-            dataset_2['name'] = None
-    else: 
-        d2 = None
-        dataset_2 = {
-            'attributes': None,
-            'name': None,
-            'id_column': None
-        }        
-
-    return Data(dataset_1=d1,
-            id_column_name_1=dataset_1['id_column'],
-            attributes_1=dataset_1['attributes'],
-            dataset_name_1=dataset_1['name'],
-            dataset_2=d2,
-            id_column_name_2=dataset_2['id_column'],
-            attributes_2=dataset_2['attributes'],
-            dataset_name_2=dataset_2['name'],
-            ground_truth=gt,
-            skip_ground_truth_processing=skip_ground_truth_processing
-        )
 
 
 def get_new_dict(workflow_step: str, old_dict: dict) -> dict:
-    new_dict = {}
-    if 'method' not in old_dict:
+    if 'method' not in old_dict or old_dict['method'] not in methods_dict[workflow_step]:
         return None
-    else: 
-        if old_dict['method'] not in methods_dict[workflow_step]:
-            return None
     
-    new_dict['method'] = methods_mapping[old_dict["method"]]
+    
+    new_dict = { "method": methods_mapping[old_dict["method"]] }
     if 'params' in old_dict:
-        new_params = {}
+        # new_params = {}
         old_params = get_parameters_of_class(new_dict['method'].__init__) 
-        for key in old_params:
-            if key in old_dict['params']: 
-                new_params[key] = old_dict['params'][key]
+    
+        new_params = {
+                        key : old_dict['params'][key]
+                        for key in old_params if key in old_dict['params']
+                    }
+
+        # for key in old_params:
+        #     if key in old_dict['params']: 
+        #         new_params[key] = old_dict['params'][key]
         if new_params:
             new_dict['params'] = new_params
     
@@ -171,14 +153,9 @@ def get_new_dict(workflow_step: str, old_dict: dict) -> dict:
         if 'similarity_threshold' in old_dict: 
             new_dict['exec_params'] = dict(similarity_threshold=old_dict['similarity_threshold'])
             return new_dict
-        
-
 
     for key in old_dict:
-        if key in ['method','params']: 
-            continue
-       
-        if old_dict[key]:    
+        if key not in ['method', 'params'] and old_dict[key]:    
             new_dict[key] = old_dict[key]
 
     return new_dict
@@ -200,18 +177,83 @@ def keep_first_unique_method(methods_list: list) -> list:
     return unique_data
 
 
+def load_embeddings(mc: MinioClient, input: dict, parameters: dict) -> dict:
+
+
     
+    if "embeddings_dataset_1" in input:
+        mc.get_object(s3_path=input["embeddings_dataset_1"][0], local_path=f".local/emb_1.npy")
+        parameters["load_path_if_exist"] = True
+        parameters['load_path_d1'] = '.local/emb_1.npy'
+    
+
+    if "embeddings_dataset_2" in input:
+        mc.get_object(s3_path=input["embeddings_dataset_2"][0], local_path=f".local/emb_2.npy")
+        parameters["load_path_if_exist"] = True
+        parameters['load_path_d2'] = '.local/emb_2.npy'
+        
+
+
+    return parameters
+
+
 
 def get_EmbeddingsNNWorkFlow(data: Data, parameters: dict) -> EmbeddingsNNWorkFlow:
-    new_parameters = {'data': data}
+
+    print(f"""
+Parameters given as : {json.dumps(parameters, indent=4)}
+The parameters will be checked and processed to input them correctly to pyJedAI Embeddings-NN Workflow.
+Read the docs and see how each function is called.
+""")
+
+
+    workflow_parameters = {'name' : parameters.get('name')}
+    block_building_parameters = parameters['block_building']
+    block_building_dict = {'method': EmbeddingsNNBlockBuilding}
+
+    # __init__ 
+    block_building_dict['params'] = {'vectorizer': block_building_parameters['vectorizer'] if 'vectorizer' in block_building_parameters else 'smpnet'}
     
-    parameters_keys = [
-        "block_building",
-        "clustering"
-    ]
+    # build_blocks
+    block_building_dict['exec_params'] = {
+        "vector_size" : 300,
+        "num_of_clusters": 5,
+        "top_k": 30,
+        "max_word_embeddings_size": 256,
+        "attributes_1": None,
+        "attributes_2": None,
+        "input_cleaned_blocks": None,
+        "similarity_distance": 'cosine',
+        "custom_pretrained_model": None,
+    }
+
+    for key in block_building_dict['exec_params']:
+        if key in block_building_parameters: 
+            block_building_dict['exec_params'][key] = block_building_parameters[key]
+
+    for key in ["load_embeddings_if_exist", "load_path_d1", "load_path_d2"] :
+        if key in block_building_parameters:
+            block_building_dict['exec_params'][key] = block_building_parameters[key]
+
+    keys = block_building_dict['exec_params'].copy()
+
+    for key in keys:
+        if block_building_dict['exec_params'][key] == None:
+            del block_building_dict['exec_params'][key]
+
+    workflow_parameters['block_building'] = block_building_dict
+    clustering_parameters = parameters['clustering']
+
+    if (new_dict := get_new_dict(workflow_step='clustering', old_dict=clustering_parameters)): 
+        workflow_parameters['clustering'] = new_dict
+
+    print(f""" 
+After processing input...
+The workflow-parameters are : {json.dumps(dict_to_str(workflow_parameters), indent=4)} 
+    """)
 
 
-    return EmbeddingsNNWorkFlow(**new_parameters)
+    return EmbeddingsNNWorkFlow(**workflow_parameters)
 
 
 
