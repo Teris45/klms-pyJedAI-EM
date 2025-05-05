@@ -73,6 +73,9 @@ def run(json):
         minio_key = json['minio']['key']
         minio_skey = json['minio']['skey']
         minio_endpoint = json['minio']['endpoint_url']
+
+        if 'https://' in minio_endpoint:
+            minio_endpoint = minio_endpoint.replace('https://', '')
         
         mc = MinioClient(access_key=minio_id, secret_key= minio_key, session_token=minio_skey, endpoint=minio_endpoint)
 
