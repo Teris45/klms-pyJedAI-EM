@@ -46,9 +46,9 @@ The following README will guide you through the whole process of Entity Matching
         	]
 }
 ```
-> :bulb: **Tip:** If `dataset_2` is provided, matches will only be of type (e₁, e₂), where e₁ is an entity in `dataset_1` and e₂ is an entity in `dataset_2`.
+>  &#x1F4A1; **Tip:** If `dataset_2` is provided, matches will only be of type (e_1, e_2), where e_1 is an entity in `dataset_1` and e_2 is an entity in `dataset_2`.
 
-> :bulb: **Tip:** If `ground_truth` is provided, metrics will be returned
+>  &#x1F4A1; **Tip:** If `ground_truth` is provided, metrics will be returned
 ## Parameters
 Concering input, additional info must be provided.
 | Attributes | Info | Value Type | Required  
