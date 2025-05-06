@@ -62,31 +62,63 @@ Concering input, additional info must be provided.
   <tr>
 	  <td><code>dataset_1</code></td>
 	  <td>Provide info for dataset to be processed correctly</td>
-	  <td><a href="#dataset_object">dataset_object</a></td>
+	  <td><a href="#Dataset">dataset_object</a></td>
 	  <td>&#10004;</td> 
   </tr>
   <tr>
-    <td><code>dataset_2</code></td>
-    <td><code>.csv</code> format</td>
-    <td><code>List</code></td>
-    <td></td>
+	  <td><code>dataset_2</code></td>
+	  <td>Provide info for dataset to be processed correctly</td>
+	  <td><a href="#Dataset">dataset_object</a></td>
+	  <td></td> 
   </tr>
   <tr>
-    <td><code>ground_truth</code></td>
-    <td><code>.csv</code> format</td>
-    <td><code>List</code></td>
-    <td></td>
+	  <td><code>ground_truth</code></td>
+	  <td>Provide info for dataset to be processed correctly</td>
+	  <td><a href="#Ground Truth">ground_truth_object</a></td>
+	  <td></td> 
+  </tr>
+  <tr>
+  	  <td><code>workflow</code></td>
+	  <td><code>BlockingBasedWorkflow</code> \ <code>EmbeddingsNNWorkFlow</code> \ <code>JoinWorkflow</code></td>
+	  <td><a href="#Workflow">workflow</a></td>
+	  <td>&#10004;</td> 
   </tr>
 </table>
 
-| Attributes | Info | Value Type | Required  
-| :--- | :--- | :--- | :---
-`dataset_1` | Provide info for dataset to be processed correctly | [dataset_object](#dataset_object) |  &#10004; 
-`dataset_2` | Provide info for dataset to be processed correctly | dataset_object |  
-`ground_truth` | Provide info for dataset to be processed correctly | ground_truth_object |  
-`workflow` | `BlockingBasedWorkflow` \ `EmbeddingsNNWorkFlow` \ `JoinWorkflow` | string | &#10004;
+### Dataset
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	  <td><code>dataset_1</code></td>
+	  <td>Provide info for dataset to be processed correctly</td>
+	  <td><a href="#Dataset">dataset_object</a></td>
+	  <td>&#10004;</td> 
+  </tr>
+  <tr>
+	  <td><code>dataset_2</code></td>
+	  <td>Provide info for dataset to be processed correctly</td>
+	  <td><a href="#Dataset">dataset_object</a></td>
+	  <td></td> 
+  </tr>
+  <tr>
+	  <td><code>ground_truth</code></td>
+	  <td>Provide info for dataset to be processed correctly</td>
+	  <td><a href="#Ground Truth">ground_truth_object</a></td>
+	  <td></td> 
+  </tr>
+  <tr>
+  	  <td><code>workflow</code></td>
+	  <td><code>BlockingBasedWorkflow</code> \ <code>EmbeddingsNNWorkFlow</code> \ <code>JoinWorkflow</code></td>
+	  <td><a href="#Workflow">workflow</a></td>
+	  <td>&#10004;</td> 
+  </tr>
+</table>
 
-### dataset_object
 * `dataset_1`: 
 	*  `separator` : character separating values in each row &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Required**
 	*  `id_column_name` : column containing id of dataset &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Required**
