@@ -62,25 +62,25 @@ Concering input, additional info must be provided.
   <tr>
 	  <td><code>dataset_1</code></td>
 	  <td>Provide info for dataset to be processed correctly</td>
-	  <td><a href="#Dataset">dataset_object</a></td>
+	  <td><a href="#dataset">dataset_object</a></td>
 	  <td>&#10004;</td> 
   </tr>
   <tr>
 	  <td><code>dataset_2</code></td>
 	  <td>Provide info for dataset to be processed correctly</td>
-	  <td><a href="#Dataset">dataset_object</a></td>
+	  <td><a href="#dataset">dataset_object</a></td>
 	  <td></td> 
   </tr>
   <tr>
 	  <td><code>ground_truth</code></td>
 	  <td>Provide info for dataset to be processed correctly</td>
-	  <td><a href="#Ground Truth">ground_truth_object</a></td>
+	  <td><a href="#ground-truth">ground_truth_object</a></td>
 	  <td></td> 
   </tr>
   <tr>
   	  <td><code>workflow</code></td>
 	  <td><code>BlockingBasedWorkflow</code> \ <code>EmbeddingsNNWorkFlow</code> \ <code>JoinWorkflow</code></td>
-	  <td><a href="#Workflow">workflow_object</a></td>
+	  <td><a href="#workflow">workflow_object</a></td>
 	  <td>&#10004;</td> 
   </tr>
 </table>
