@@ -51,6 +51,34 @@ The following README will guide you through the whole process of Entity Matching
 >  &#x1F4A1; **Tip:** If `ground_truth` is provided, metrics will be returned
 ## Parameters
 Concering input, additional info must be provided.
+
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	  <td><code>dataset_1</code></td>
+	  <td>Provide info for dataset to be processed correctly</td>
+	  <td><a href="#dataset_object">dataset_object</a></td>
+	  <td>&#10004;</td> 
+  </tr>
+  <tr>
+    <td><code>dataset_2</code></td>
+    <td><code>.csv</code> format</td>
+    <td><code>List</code></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><code>ground_truth</code></td>
+    <td><code>.csv</code> format</td>
+    <td><code>List</code></td>
+    <td></td>
+  </tr>
+</table>
+
 | Attributes | Info | Value Type | Required  
 | :--- | :--- | :--- | :---
 `dataset_1` | Provide info for dataset to be processed correctly | [dataset_object](#dataset_object) |  &#10004; 
