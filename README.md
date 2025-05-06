@@ -15,19 +15,19 @@ The following README will guide you through the whole process of Entity Matching
   <tr>
     <td><code>dataset_1</code></td>
     <td><code>.csv</code> format</td>
-    <td><code>List</code></td>
+    <td><code>list</code></td>
     <td>&#10004;</td>
   </tr>
   <tr>
     <td><code>dataset_2</code></td>
     <td><code>.csv</code> format</td>
-    <td><code>List</code></td>
+    <td><code>list</code></td>
     <td></td>
   </tr>
   <tr>
     <td><code>ground_truth</code></td>
     <td><code>.csv</code> format</td>
-    <td><code>List</code></td>
+    <td><code>list</code></td>
     <td></td>
   </tr>
 </table>
@@ -80,12 +80,12 @@ Concering input, additional info must be provided.
   <tr>
   	  <td><code>workflow</code></td>
 	  <td><code>BlockingBasedWorkflow</code> \ <code>EmbeddingsNNWorkFlow</code> \ <code>JoinWorkflow</code></td>
-	  <td><a href="#Workflow">workflow</a></td>
+	  <td><a href="#Workflow">workflow_object</a></td>
 	  <td>&#10004;</td> 
   </tr>
 </table>
 
-### Dataset
+#### Dataset
 <table>
   <tr>
     <th>Attributes</th>
@@ -94,36 +94,49 @@ Concering input, additional info must be provided.
     <th>Required</th>
   </tr>
   <tr>
-	  <td><code>dataset_1</code></td>
-	  <td>Provide info for dataset to be processed correctly</td>
-	  <td><a href="#Dataset">dataset_object</a></td>
+	  <td><code>separator</code></td>
+	  <td>Character separating values in csv</td>
+	  <td><code>char</code></td>
 	  <td>&#10004;</td> 
   </tr>
   <tr>
-	  <td><code>dataset_2</code></td>
-	  <td>Provide info for dataset to be processed correctly</td>
-	  <td><a href="#Dataset">dataset_object</a></td>
+	  <td><code>id_column_name</code></td>
+	  <td>Name of Dataset's id column</td>
+	  <td><code>string</code></td>
+	  <td>&#10004;</td> 
+  </tr>
+  <tr>
+	  <td><code>dataset_name</code></td>
+	  <td>Name of Dataset</td>
+	  <td><code>string</code></td>
 	  <td></td> 
   </tr>
   <tr>
-	  <td><code>ground_truth</code></td>
-	  <td>Provide info for dataset to be processed correctly</td>
-	  <td><a href="#Ground Truth">ground_truth_object</a></td>
+	  <td><code>attributes</code></td>
+	  <td>Columns to be used for matching</td>
+	  <td><code>list</code></td>
 	  <td></td> 
   </tr>
+</table>
+
+#### Ground Truth
+
+<table>
   <tr>
-  	  <td><code>workflow</code></td>
-	  <td><code>BlockingBasedWorkflow</code> \ <code>EmbeddingsNNWorkFlow</code> \ <code>JoinWorkflow</code></td>
-	  <td><a href="#Workflow">workflow</a></td>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	  <td><code>separator</code></td>
+	  <td>Character separating values in csv</td>
+	  <td><code>char</code></td>
 	  <td>&#10004;</td> 
   </tr>
 </table>
 
-* `dataset_1`: 
-	*  `separator` : character separating values in each row &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Required**
-	*  `id_column_name` : column containing id of dataset &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Required**
-	*  `dataset_name` : name of dataset &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **optional**
-   	*  `attributes` : certain attributes to be used for matching &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **optional**
+
 Three different workflows can be executed from pyJedAI.
 
 
