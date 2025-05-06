@@ -7,11 +7,10 @@ The following README will guide you through the whole process of Entity Matching
 
 | Attributes | Info | Value Type | Required  
 | :--- | :--- | :--- | :---
-`dataset_1` | `.csv` format | List | - [X]    
-* `dataset_2`: `.csv` format &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type: list &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Optional**  
-> :bulb: **Tip:** If `dataset_2` is provided, matches will only be of type (e₁, e₂), where e₁ is an entity in `dataset_1` and e₂ is an entity in `dataset_2`.
-* `ground_truth`: `.csv` format containing ids of matching entities &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; type: list &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Optional**  
-> :bulb: **Tip:** If `ground_truth` is provided, metrics will be returned
+`dataset_1` | `.csv` format | List |  &#10004; 
+`dataset_2` | `.csv` format | List |  
+`ground_truth` | `.csv` format containing ids of matching entities | List  
+
 ```
 {
 	"inputs" :
@@ -26,7 +25,19 @@ The following README will guide you through the whole process of Entity Matching
         	]
 }
 ```
+> :bulb: **Tip:** If `dataset_2` is provided, matches will only be of type (e₁, e₂), where e₁ is an entity in `dataset_1` and e₂ is an entity in `dataset_2`.
+
+> :bulb: **Tip:** If `ground_truth` is provided, metrics will be returned
 ## Parameters
+Concering input, additional info must be provided.
+| Attributes | Info | Value Type | Required  
+| :--- | :--- | :--- | :---
+`dataset_1` | Provide info for dataset to be processed correctly | [dataset_object](#dataset_object) |  &#10004; 
+`dataset_2` | Provide info for dataset to be processed correctly | dataset_object |  
+`ground_truth` | Provide info for dataset to be processed correctly | ground_truth_object |  
+`workflow` | `BlockingBasedWorkflow` \ `EmbeddingsNNWorkFlow` \ `JoinWorkflow` | string | &#10004;
+
+### dataset_object
 * `dataset_1`: 
 	*  `separator` : character separating values in each row &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Required**
 	*  `id_column_name` : column containing id of dataset &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; **Required**
