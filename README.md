@@ -5,11 +5,32 @@ The following README will guide you through the whole process of Entity Matching
 ## Input
 **For all key attributes in JSON, exactly one file path must be provided.**
 
-| Attributes | Info | Value Type | Required  
-| :--- | :--- | :--- | :---
-`dataset_1` | `.csv` format | List |  &#10004; 
-`dataset_2` | `.csv` format | List |  
-`ground_truth` | `.csv` format containing ids of matching entities | List  
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td><code>dataset_1</code></td>
+    <td><code>.csv</code> format</td>
+    <td><code>List</code></td>
+    <td>&#10004;</td>
+  </tr>
+  <tr>
+    <td><code>dataset_2</code></td>
+    <td><code>.csv</code> format</td>
+    <td><code>List</code></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><code>ground_truth</code></td>
+    <td><code>.csv</code> format</td>
+    <td><code>List</code></td>
+    <td></td>
+  </tr>
+</table>
 
 ```
 {
