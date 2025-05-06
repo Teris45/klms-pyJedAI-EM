@@ -79,13 +79,33 @@ Concering input, additional info must be provided.
   </tr>
   <tr>
   	  <td><code>workflow</code></td>
-	  <td><code>BlockingBasedWorkflow</code> \ <code>EmbeddingsNNWorkFlow</code> \ <code>JoinWorkflow</code></td>
-	  <td><a href="#workflow">workflow_object</a></td>
+	  <td>Select your preferred workflow:  
+  		<code>BlockingBasedWorkflow</code>,  
+  		<code>EmbeddingsNNWorkflow</code>, or  
+  		<code>JoinWorkflow</code>  
+	  <td><code>string</code></td>
 	  <td>&#10004;</td> 
   </tr>
+  <tr>
+  	  <td><code>block_building</code></td>
+	  <td>Block building method and parameters used only for <code>BlockingBasedWorkflow</code>, <code>EmbeddingsNNWorkflow</code> 
+	  <td><a href="block-building">block_building_object</a></td>
+	  <td>&#10004;</td> 
+  </tr>
+  <tr>
+  	  <td><code>block_cleaning</code></td>
+	  <td>Block cleaning method and parameters used only for <code>BlockingBasedWorkflow</code> <br>More than one <code>block_cleaning</code> methods can be used 
+	  <td><a href="block-cleaning">block_cleaning_object</a> or <code>list</code> of <a href="block-cleaning">block_cleaning_object</a></td>
+	  <td></td> 
+  </tr>
+		
 </table>
 
+>  &#x1F4A1; **Tip:** `JoinWorkflow` does not contain `block_building` step.
+
+
 #### Dataset
+Attributes of keys: `dataset_1`, `dataset_2`
 <table>
   <tr>
     <th>Attributes</th>
@@ -120,7 +140,7 @@ Concering input, additional info must be provided.
 </table>
 
 #### Ground Truth
-
+Attributes of key: `ground_truth`
 <table>
   <tr>
     <th>Attributes</th>
@@ -137,7 +157,30 @@ Concering input, additional info must be provided.
 </table>
 
 
-Three different workflows can be executed from pyJedAI.
+#### Block Building
+
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Workflow</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	  <td><code>method</code></td>
+	  <td>Block building methods
+	  <ul>
+		<li><code>StandardBlocking</code></li>
+		<li><code>QGramsBlocking</code></li>		  
+		<li><code>SuffixArraysBlocking</code></li>
+	  </ul>
+   </td>
+	  <td><code>char</code></td>
+	  <td>&#10004;</td> 
+  </tr>
+</table>
+
 
 
 
