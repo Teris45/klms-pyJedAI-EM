@@ -110,6 +110,12 @@ Concering input, additional info must be provided.
 	  <td><a href="block-cleaning">block_cleaning_object</a> or <code>list</code> of <a href="block-cleaning">block_cleaning_object</a></td>
 	  <td></td> 
   </tr>
+  <tr>
+    <td><code>comparison_cleaning</code></td>
+	  <td>Comparison cleaning method and parameters used only for <code>BlockingBasedWorkflow</code> </td> 
+	  <td><a href="comparison-cleaning">comparison-cleaning-object</a></td>
+	  <td></td> 
+  </tr>
 		
 </table>
 
@@ -326,11 +332,18 @@ Attributes of key: `block_cleaning`
   </tr>
   <tr>
 	<td rowspan="1"><code>method</code></td>
-  	<td><code>BlockFiltering</code><br><code>BlockPurging</code>		  		  
+  	<td><code>WeightedEdgePruning</code>
+<code>CardinalityEdgePruning</code>
+<code>CardinalityNodePruning</code>
+<code>ReciprocalCardinalityNodePruning</code>
+<code>WeightedNodePruning</code>
+<code>BLAST</code>
+<code>ReciprocalWeightedNodePruning</code>
+<code>ComparisonPropagation</code>		  		  
   	</td>
   	<td><code>string</code></td>
   	<td><code>BlockingBasedWorkflow</code></td>
-	<td></td> 
+	<td>&#10004;</td> 
   </tr>
 </table>
 
@@ -345,19 +358,20 @@ Attributes of key: `params`
         <th>Method</th>
     </tr>
     <tr>
-        <td rowspan="4"><code>params</code></td>
-        <td><code>ratio</code></td>
-        <td><code>float</code></td>
-        <td>0.8</td>
-        <td rowspan="1"><code>BlockFiltering</code></td>
+        <td rowspan="2"><code>params</code></td>
+        <td><code>weighting_scheme</code></td>
+        <td><code>CN-CBS</code><br><code>CBS</code><br><code>SN-CBS</code><br><code>CNC</code><br><code>SNC</code><br><code>SND</code><br><code>CND</code><br><code>CNJ</code><br><code>SNJ</code><br><code>COSINE</code><br><code>DICE</code><br><code>ECBS</code><br><code>JS</code><br><code>EJS</code><br><code>X2</code></td>
+        <td><code>X2</code></td>
+        <td rowspan="1"><code>WeightedEdgePruning</code><br><code>CardinalityEdgePruning</code><br><code>CardinalityNodePruning</code><br><code>ReciprocalCardinalityNodePruning</code><br><code>WeightedNodePruning</code><br><code>BLAST</code><br><code>ReciprocalWeightedNodePruning</code><br></td>
     </tr>
     <tr>
-        <td><code>smoothing_factor</code></td>
-        <td><code>float</code></td>
-        <td>1.025</td>
-        <td rowspan="1"><code>BlockPurging</code></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td rowspan="1"><code>ComparisonPropagation</code></td>
     </tr>
 </table>
-#### BlockingBased-Workflow
-* `workflow`: `"BlockingBasedWorkflow"`
+
+#### Comparison Cleaning
+Attributes of key: `comparison_cleaning`
 
