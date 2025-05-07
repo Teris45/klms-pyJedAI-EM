@@ -101,25 +101,25 @@ Concering input, additional info must be provided.
   <tr>
   	  <td><code>block_building</code></td>
 	  <td>Block building method and parameters used only for <code>BlockingBasedWorkflow</code>, <code>EmbeddingsNNWorkflow</code> 
-	  <td><a href="block-building">block_building_object</a></td>
+	  <td><a href="#block-building">block_building_object</a></td>
 	  <td>&#10004;</td> 
   </tr>
   <tr>
   	  <td><code>block_cleaning</code></td>
 	  <td>Block cleaning method and parameters used only for <code>BlockingBasedWorkflow</code> <br>More than one <code>block_cleaning</code> methods can be used 
-	  <td><a href="block-cleaning">block_cleaning_object</a> or <code>list</code> of <a href="block-cleaning">block_cleaning_object</a></td>
+	  <td><a href="#block-cleaning">block_cleaning_object</a> or <code>list</code> of <a href="block-cleaning">block_cleaning_object</a></td>
 	  <td></td> 
   </tr>
   <tr>
     <td><code>comparison_cleaning</code></td>
 	  <td>Comparison cleaning method and parameters used only for <code>BlockingBasedWorkflow</code> </td> 
-	  <td><a href="comparison-cleaning">comparison-cleaning-object</a></td>
+	  <td><a href="#comparison-cleaning">comparison-cleaning-object</a></td>
 	  <td></td> 
   </tr>
   <tr>
     <td><code>entity_matching</code></td>
 	  <td>Entity Matching method and parameters used only for <code>BlockingBasedWorkflow</code> </td> 
-	  <td><a href="entity-matching">comparison-cleaning-object</a></td>
+	  <td><a href="#entity-matching">comparison-cleaning-object</a></td>
 	  <td>&#10004;</td> 
   </tr>
 		
