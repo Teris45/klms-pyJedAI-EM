@@ -282,3 +282,45 @@ Attributes of key: `ground_truth`
      ....     
     }    
 ```   
+
+
+## Output
+**For all key attributes in JSON, exactly one file path must be provided.**
+
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td><code>metrics</code></td>
+    <td>Creates a file with F1, Recall, Precision metrics if ground truth exists<br><code>.csv</code> format</td>
+    <td><code>path</code></td>
+    <td>&#10004;</td>
+  </tr>
+  <tr>
+    <td><code>pairs</code></td>
+    <td>Creates a file with the ids of pairs<br><code>.csv</code> format</td>
+    <td><code>path</code></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><code>entities</code></td>
+    <td>Creates a file with all the matched entities<code>.csv</code> format</td>
+    <td><code>list</code></td>
+    <td></td>
+  </tr>
+</table>
+
+```
+{
+  "outputs": {
+        "metrics" : "s3://klms-bucket/pyjedai-output/metrics.csv",
+        "pairs" : "s3://klms-bucket/pyjedai-output/pairs.csv",
+        "entities" : "s3://klms-bucket/pyjedai-output/entities_df.csv"
+  }
+}
+
+```
