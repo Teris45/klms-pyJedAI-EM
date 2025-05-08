@@ -189,7 +189,7 @@ def run(json_input):
             y = json['parameters']['y']
         """        
         
-        input = json_input['input']
+        input = json_input['input'] if 'input' in json_input else json_input['inputs']
         params = json_input['parameters']
         
         for key in ['dataset_1', 'dataset_2', "ground_truth"]:

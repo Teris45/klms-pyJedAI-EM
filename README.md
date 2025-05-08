@@ -187,4 +187,50 @@ Attributes of key: `ground_truth`
   </tr>
 </table>
 
+> Input Examples
+>
+```
+"parameters" : {
+        "dataset_1" : {
+            "separator" : "|",
+            "id_column_name" : "id",
+            "dataset_name" : "abt"                    
+        },
+        "dataset_2" : {
+            "separator" : "|", 
+            "id_column_name" : "id",
+            "dataset_name" : "buy"
+        },
+        "ground_truth" : {
+            "separator" : "|"
+        },                
+        "workflow": "BlockingBasedWorkflow",
+        "block_building": {
+              "method": "StandardBlocking",
+              "attributes_1" : ["name"],
+              "attributes_2" : ["first_name"]
+        },
+        "block_cleaning" : [
+            {
+                "method" : "BlockFiltering", 
+                "params" : { "ratio" : 0.7 }
+            }
+        ],
+        "comparison_cleaning": {
+            "method": "BLAST"
+        },
+        "entity_matching" : { 
+            "method" : "EntityMatching",
+            "params" : {
+                "similarity_threshold" : 0.8
+            }
+        },
+        "clustering" : {
+            "method" : "UniqueMappingClustering",
+            "params" : {
+                "similarity_threshold" : 0.1
+            }
+        }
+}
 
+```

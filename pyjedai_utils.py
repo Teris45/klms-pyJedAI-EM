@@ -150,6 +150,8 @@ def get_new_dict(workflow_step: str, old_dict: dict) -> dict:
             new_dict['params'] = new_params
     
     if workflow_step == 'clustering':
+        if 'params' in old_dict and 'similarity_threshold' in old_dict['params']:
+            old_dict['similarity_threshold'] = old_dict['params']['similarity_threshold']
         if 'similarity_threshold' in old_dict: 
             new_dict['exec_params'] = dict(similarity_threshold=old_dict['similarity_threshold'])
             return new_dict
