@@ -36,7 +36,7 @@ from blocking_based import get_BlockingBasedWorkflow
     
     
 
-def run(json):
+def run(json_input):
 
     """
         This is the core method that initiates tool .py files execution. 
@@ -69,10 +69,10 @@ def run(json):
 
         """
         ################################## MINIO INIT #################################
-        minio_id = json['minio']['id']
-        minio_key = json['minio']['key']
-        minio_skey = json['minio']['skey']
-        minio_endpoint = json['minio']['endpoint_url']
+        minio_id = json_input['minio']['id']
+        minio_key = json_input['minio']['key']
+        minio_skey = json_input['minio']['skey']
+        minio_endpoint = json_input['minio']['endpoint_url']
 
         if 'https://' in minio_endpoint:
             minio_endpoint = minio_endpoint.replace('https://', '')
@@ -189,8 +189,8 @@ def run(json):
             y = json['parameters']['y']
         """        
         
-        input = json['inputs']
-        params = json['parameters']
+        input = json_input['input']
+        params = json_input['parameters']
         
         for key in ['dataset_1', 'dataset_2', "ground_truth"]:
             if key not in input and key in params:
@@ -235,8 +235,8 @@ def run(json):
         """)
         
         outputs_dict = {}
-        if 'outputs' in json: 
-            outputs = json['outputs']
+        if 'output' in json_input: 
+            outputs = json_input['output']
             for key in outputs:
                 output_path : str = None
                 if key == 'metrics':
@@ -272,7 +272,7 @@ def run(json):
                 'status': "success",
         }
 
-        json_output['outputs'] = outputs_dict
+        json_output['output'] = outputs_dict
         
         
         
