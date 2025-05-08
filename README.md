@@ -234,3 +234,21 @@ Attributes of key: `ground_truth`
 }
 
 ```
+"parameters" : {           
+        "workflow": "EmbeddingsNNWorkFlow",
+        "block_building": 
+        {
+            "method" : "EmbeddingsNNBlockBuilding",
+            "params" : {
+                "vectorizer" : "st5"
+            }
+        },
+        "clustering": {
+            "method" : "UniqueMappingClustering",
+            "params" : {
+                "similarity_threshold": 0.4
+            }
+        }
+     ....     
+    }    
+```   
