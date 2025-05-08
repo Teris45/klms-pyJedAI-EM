@@ -24,14 +24,25 @@ required_keys = {
 def dict_to_str(old_dict: dict): 
     
     new_dict = {} 
-    
     for key in old_dict: 
         new_dict[key] = copy.deepcopy(old_dict[key])
         if isinstance(new_dict[key], list): 
             for item in new_dict[key]: 
                 item['method'] = item['method'].__name__
         else:
-            new_dict[key]['method'] = new_dict[key]['method'].__name__
+            if new_dict[key]['method']:
+                new_dict[key]['method'] = new_dict[key]['method'].__name__
+                
+    for key in new_dict:
+        print(key)
+        if 'exec_params' in new_dict[key]: 
+            if not 'params' in new_dict[key]:
+                new_dict[key]['params'] = new_dict[key]['exec_params']
+            else:
+                for exec_key in new_dict[key]['exec_params']: 
+                    new_dict[key]['params'][exec_key] = new_dict[key]['exec_params'][exec_key]
+    
+            del new_dict[key]['exec_params'] 
     
     return new_dict
     
@@ -210,12 +221,17 @@ Read the docs and see how each function is called.
 
 
     workflow_parameters = {'name' : parameters.get('name')}
+    if not workflow_parameters['name']:
+        del workflow_parameters['name']
+        
     block_building_parameters = parameters['block_building']
     block_building_dict = {'method': EmbeddingsNNBlockBuilding}
 
+    if 'params' in block_building_parameters: 
+        block_building_parameters = block_building_parameters['params']
     # __init__ 
     block_building_dict['params'] = {'vectorizer': block_building_parameters['vectorizer'] if 'vectorizer' in block_building_parameters else 'smpnet'}
-    
+        
     # build_blocks
     block_building_dict['exec_params'] = {
         "vector_size" : 300,

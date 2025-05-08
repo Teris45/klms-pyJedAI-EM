@@ -1,10 +1,10 @@
 
 {
     "minio": {
-        "id" : "K2EWS4ZJM0VMCWFX4PFA",
-        "key" : "oNFgVFuWWGD5HVK0guBoKMPtClFDuJXlO8+Op7fW",
-        "skey": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJLMkVXUzRaSk0wVk1DV0ZYNFBGQSIsImFjciI6IjEiLCJhbGxvd2VkLW9yaWdpbnMiOlsiKiJdLCJhdWQiOlsibWluaW8iLCJhY2NvdW50Il0sImF6cCI6InN0ZWxhci1hcGkiLCJlbWFpbCI6ImxzdGV0c2lrYXMzQGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJleHAiOjE3NDY3ODQ3MDUsImZhbWlseV9uYW1lIjoiU3RldHNpa2FzIiwiZ2l2ZW5fbmFtZSI6IkxlZnRlcmlzIiwiZ3JvdXBzIjpbImRlZmF1bHQtcm9sZXMtbWFzdGVyIiwib2ZmbGluZV9hY2Nlc3MiLCJwdXNoZXJzIiwidW1hX2F1dGhvcml6YXRpb24iLCJmdWxsX21pbmlvX2FjY2VzcyJdLCJpYXQiOjE3NDY2OTY4NTAsImlzcyI6Imh0dHBzOi8va2Muc3RlbGFyLmdyL3JlYWxtcy9tYXN0ZXIiLCJqdGkiOiJhMGUzOTlmNS0wMDYxLTQyYjYtYTZhNS1hMDc0ODViOWQxMGUiLCJuYW1lIjoiTGVmdGVyaXMgU3RldHNpa2FzIiwicG9saWN5IjoiMDgwNzU0YjNmNzM5OWFhMWRjMGYyOTMzMWUzMzQyNDVlN2ZkNmU5M2Y1NTBmY2EyZTg3OWY3ZGYxYTc1MGY1Nyw5ZDAwNGIwYzA2YjFmN2Q0YTBhYTkyMzY2NGYzMzBlNTBmZWNlMWJhZWQ2ZWIwZjAyMThmOTEyNzZhYzNmNzU2IiwicHJlZmVycmVkX3VzZXJuYW1lIjoibHN0ZXRzaWthcyIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJkZWZhdWx0LXJvbGVzLW1hc3RlciIsIm9mZmxpbmVfYWNjZXNzIiwicHVzaGVycyIsInVtYV9hdXRob3JpemF0aW9uIiwiZnVsbF9taW5pb19hY2Nlc3MiXX0sInJlc291cmNlX2FjY2VzcyI6eyJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX0sIm1pbmlvIjp7InJvbGVzIjpbIjlkMDA0YjBjMDZiMWY3ZDRhMGFhOTIzNjY0ZjMzMGU1MGZlY2UxYmFlZDZlYjBmMDIxOGY5MTI3NmFjM2Y3NTYiLCIwODA3NTRiM2Y3Mzk5YWExZGMwZjI5MzMxZTMzNDI0NWU3ZmQ2ZTkzZjU1MGZjYTJlODc5ZjdkZjFhNzUwZjU3Il19fSwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSByZWdpc3RyeV9zY29wZSBhZG1pbl9hdHRyX3Njb3BlIG1pbmlvX2F1dGhfc2NvcGUgZW1haWwiLCJzaWQiOiI0NTZhMGE4Zi00NjQ2LTQyNGQtYmM5My0wMzFhMTUwZTBlMWQiLCJzdWIiOiI3M2Y2ZjA0OS0zMDYzLTQ2YWItYmRkOC1mZWUxOTAxN2FiMjAiLCJ0eXAiOiJCZWFyZXIifQ.uMulcZ5SIQ5nhTUB8ex0V1YpTchdPUCmEp9mrrueOTSeWiaoTcZU8QsAt3bhzZFnA1cPBh6t92HBNolbkfY_6w",
-        "endpoint_url": "https://minio.stelar.gr"
+        "id" : "",
+        "key" : "",
+        "skey": ""
+        endpoint_url": "https://minio.stelar.gr"
     },
     "inputs": {
         "dataset_1" : [
@@ -28,31 +28,21 @@
         "ground_truth" : {
             "separator" : "|"
         },                
-        "workflow": "BlockingBasedWorkflow",
-        "block_building": {
-              "method": "StandardBlocking"
-        },
-        "block_cleaning" : [
-            {
-                "method" : "BlockFiltering", 
-                "params" : { "ratio" : 0.7 }
-            }
-        ],
-        "comparison_cleaning": {
-            "method": "BLAST"
-        },
-        "entity_matching" : { 
-            "method" : "EntityMatching",
+        "workflow": "EmbeddingsNNWorkFlow",
+        "block_building": 
+        {
+            "method" : "EmbeddingsNNBlockBuilding",
             "params" : {
-                "similarity_threshold" : 0.1
+                "vectorizer" : "st5"
             }
         },
-        "clustering" : {
+        "clustering": {
             "method" : "UniqueMappingClustering",
             "params" : {
-                "similarity_threshold" : 0.1
+                "similarity_threshold": 0.4
             }
         }
+        
           
     },       
 
