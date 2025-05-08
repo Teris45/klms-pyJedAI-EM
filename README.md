@@ -1,258 +1,499 @@
-# Welcome to the KLMS Tool Template
+# README PyJedAI - Entity Matching
 
-<img src="https://raw.githubusercontent.com/stelar-eu/klms-tool-template/refs/heads/main/logo.png" alt="Stelar Tool Template" width="150"/>
+The following README will guide you through the whole process of Entity Matching using pyJedAI.
 
-Here you may find a lightweight and easy to use template that can encapsulate any data analysis and interlinking tools ready to run inside the KLMS Cluster. 
+## Input
+**For all key attributes in JSON, exactly one file path must be provided.**
 
-> This template is made for tools written in **Python**. Other language templates may also be implemented following this paradigm.
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+    <td><code>dataset_1</code></td>
+    <td><code>.csv</code> format</td>
+    <td><code>list</code></td>
+    <td>&#10004;</td>
+  </tr>
+  <tr>
+    <td><code>dataset_2</code></td>
+    <td><code>.csv</code> format</td>
+    <td><code>list</code></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><code>ground_truth</code></td>
+    <td><code>.csv</code> format</td>
+    <td><code>list</code></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><code>embeddings_dataset_1</code></td>
+    <td>Used for loading embeddings in <code>EmbeddingsNNWorkflow</code><br><code>.npy</code> format</td>
+    <td><code>list</code></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td><code>embeddings_dataset_2</code></td>
+    <td>Used for loading embeddings in <code>EmbeddingsNNWorkflow</code><br><code>.npy</code> format</td>
+    <td><code>list</code></td>
+    <td></td>
+  </tr>
+</table>
 
-
-# Directory Structure
-
-The directory structure used by the template is simple and straight-forward: 
 ```
-.
-├── run.sh 
-├── main.py
-├── requirements.txt
-├── Makefile
-├── Dockerfile
-└── utils/
-    └── minio_client.py
+{
+	"inputs" :
+		"dataset_1": [
+            		"d5e730ba-c1d5-4ec1-ae95-88a637204c19"
+        	],
+        	"dataset_2": [
+            		"cb37e262-a606-4d82-9712-b80e8f4d723d"
+        	],
+        	"ground_truth":[
+            		"db006da0-16ed-4ef5-bf1e-d142488d533e"
+        	]
+}
 ```
-##  `run.sh`
-
-This file is the entrypoint of the Docker Image as defined in the `Dockerfile`. It takes 3 arguments:
-
-- `$1 --> token` : The OAuth 2.0 user token used for making cURL requests to the KLMS Data API for fetching and commiting job execution parameters and metrics.
-- `$2 --> endpoint_url` : The URL at which the KLMS Data API is listening. At this url two cURL requests are made. The first one fetches the task execution parameters among various other task specs. 
-- `$3 --> id` : A unique ID which is linked to the task execution inside the KLMS Cluster.
-
-The `run.sh` script serves as a wrapper for executing `main.py`, effectively decoupling the tool's core source code from direct API calls. Instead, the tool's main runtime (`main.py`) will have the necessary parameters for job execution already available upon initiation. This separation ensures that `main.py` can focus solely on its core functionality, while `run.sh` handles the setup and provides the required execution parameters. 
-
-`run.sh` has a very explicit structure and **should not be modified in any way**. The logic of this script should not concern the tool developer.
-
-**As of November 23, 2024 the run.sh endpoints have been modified to meet the requirements of the refactored STELAR API to be released in early December 2024.**
-
-## `requirements.txt`
-Inside this file any python libaries should be declared in order to be installed in the tool image when it is built. You may include libraries in the following way:
-
-```python
-minio
-requests
-numpy==2.1.2
-```
-The `requirements.txt` can be seen as any plain requirements setting file present in the vast majority of Python projects.
-
-## `main.py`
-
-The `main.py` file is the central component responsible for initiating the tool's execution. You may imagine this as **tool.py**. It serves as the entry point for running the program, containing all essential logic and any necessary configurations for the tool's behavior.
-
--   **Custom and Explicit Structure**: `main.py` is designed with a clear and custom structure to explicitly define the workflow of the tool. It ensures that the program’s core functionality is readable, maintainable, and logically organized.
-    
--   **Imports Needed Tool `.py` Files**: The script also imports various Python files (`.py`) that contain supplementary functions, modules, or classes required by the tool. This modular approach facilitates better organization and reusability of code.
-
-From a technical scope the `main.py` consists of a single specified method that can host the tool source (`run(json)`). The structure is briefly explained in the below pseudocode block:
-
-```python
-def run(json):
-	
-	#Any tool specific code can go in here
-	#Method and libraries can be also defined and imported.
-...
-
-if __name__='__main__':
-
-	json = read from sys.argv[1]
-	...
-	response = run(json)
-	...
-    write to sys.argv[2]	
-```
-
-`run(json)` method has an **argument** `json` and **must return** a result in JSON form as shown below at `sys.argv[2]`.
-
-As mentioned earlier, the program requires certain **arguments** to effectively receive and provide data/parameters necessary for tool execution. These arguments are provided by the `run.sh` wrapper script, and their presence during runtime can be assumed as a given.
-
-The main responsibility of `main.py` is to control the initiation of execution, orchestrating different parts of the tool while keeping the source code modular and focused on the specific tasks that constitute the tool's functionality. For documentation purposes let's define what those arguments are:
-
- - `sys.argv[1]` : The first argument is the **input parameters in JSON format** fetched from the first cURL request made by the `run.sh` to the API. Its format may be found below:
-	```json
-	{
-		"inputs": {
-			"any_name": [
-			    "XXXXXXXX-bucket/temp1.csv",
-				"XXXXXXXX-bucket/temp2.csv"
-			],
-			"temp_files": [
-				"XXXXXXXX-bucket/intermediate.json"
-			]
-			
-		},
-		"outputs": {
-			"correlations_file": "/path/to/write/the/file",
-			"log_file": "/path/to/write/the/file"
-		},
-		"parameters": {
-			"x": 5,
-			"y": 2,
-		},
-		"secrets": {
-			"api_key": "AKIASIOSFODNNEXAMPLE"
-		},
-		"minio": {
-			"endpoint_url": "minio.XXXXXX.gr",
-			"id": "XXXXXXXX",
-			"key": "XXXXXXXX",
-			"skey": "XXXXXXXX",
-		}
-
-	}
-	```
-
-	**The `inputs` field contains sets of input files as defined in the tool spec and each field corresponds to an array of paths**
-	
-	**The `outputs` field provides the paths in which the tool should write its output prior the completion of its execution.**
-	
-	**The `secrets` field contains any sensitive credentials (API Keys, Passwords) that the tool needs. It is accessible only if the task signature, provided by the API during its creation, is included in the request to the KLMS API (For tools running inside the cluster this is ensured by `run.sh`)**
-	
-	**The tool developer may access tool specific parameters that were set during the execution call in the `parameters` field of the input JSON object. The `parameters` field can be as long as the tool need**.
-
-
- - `sys.argv[2]` : The second argument follows the same logic as the first one. **It is the output and metrics produced by the tool**, also in JSON format. This output block will be pushed to the KLMS API by the wrapper `run.sh` script.  Its format may be found below:
-	```json
-	{
-		"message": "Tool executed successfully!",
-		"outputs": {
-			"correlations_file": "XXXXXXXXX-bucket/2824af95-1467-4b0b-b12a-21eba4c3ac0f.csv",
-			"synopses_file": "XXXXXXXXX-bucket/21eba4c3ac0f.csv"			
-		},
-		"metrics": {	
-			"memory_allocated": "2048",
-			"peak_cpu_usage": "2.8"
-		},
-		"status": "success"
-	}
-	```
+>  &#x1F4A1; **Tip:** If `dataset_2` is provided, matches will only be of type (e_1, e_2), where e_1 is an entity in `dataset_1` and e_2 is an entity in `dataset_2`.
+
+>  &#x1F4A1; **Tip:** If `ground_truth` is provided, metrics will be returned
+## Parameters
+Concering input, additional info must be provided.
+
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	  <td><code>dataset_1</code></td>
+	  <td>Provide info for dataset to be processed correctly</td>
+	  <td><a href="#dataset">dataset_object</a></td>
+	  <td>&#10004;</td> 
+  </tr>
+  <tr>
+	  <td><code>dataset_2</code></td>
+	  <td>Provide info for dataset to be processed correctly</td>
+	  <td><a href="#dataset">dataset_object</a></td>
+	  <td></td> 
+  </tr>
+  <tr>
+	  <td><code>ground_truth</code></td>
+	  <td>Provide info for dataset to be processed correctly</td>
+	  <td><a href="#ground-truth">ground_truth_object</a></td>
+	  <td></td> 
+  </tr>
+  <tr>
+  	  <td><code>workflow</code></td>
+	  <td>Select your preferred workflow:  
+  		<code>BlockingBasedWorkflow</code>,  
+  		<code>EmbeddingsNNWorkflow</code>, or  
+  		<code>JoinWorkflow</code>  
+	  <td><code>string</code></td>
+	  <td>&#10004;</td> 
+  </tr>
+  <tr>
+  	  <td><code>block_building</code></td>
+	  <td>Block building method and parameters used only for <code>BlockingBasedWorkflow</code>, <code>EmbeddingsNNWorkflow</code> 
+	  <td><a href="#block-building">block_building_object</a></td>
+	  <td>&#10004;</td> 
+  </tr>
+  <tr>
+  	  <td><code>block_cleaning</code></td>
+	  <td>Block cleaning method and parameters used only for <code>BlockingBasedWorkflow</code> <br>More than one <code>block_cleaning</code> methods can be used 
+	  <td><a href="#block-cleaning">block_cleaning_object</a> or <code>list</code> of <a href="block-cleaning">block_cleaning_object</a></td>
+	  <td></td> 
+  </tr>
+  <tr>
+    <td><code>comparison_cleaning</code></td>
+	  <td>Comparison cleaning method and parameters used only for <code>BlockingBasedWorkflow</code> </td> 
+	  <td><a href="#comparison-cleaning">comparison-cleaning-object</a></td>
+	  <td></td> 
+  </tr>
+  <tr>
+    <td><code>entity_matching</code></td>
+	  <td>Entity Matching method and parameters used only for <code>BlockingBasedWorkflow</code> </td> 
+	  <td><a href="#entity-matching">comparison-cleaning-object</a></td>
+	  <td>&#10004;</td> 
+  </tr>
+		
+</table>
+
+>  &#x1F4A1; **Tip:** `JoinWorkflow` does not contain `block_building` step.
+
+
+#### Dataset
+Attributes of keys: `dataset_1`, `dataset_2`
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	  <td><code>separator</code></td>
+	  <td>Character separating values in csv</td>
+	  <td><code>char</code></td>
+	  <td>&#10004;</td> 
+  </tr>
+  <tr>
+	  <td><code>id_column_name</code></td>
+	  <td>Name of Dataset's id column</td>
+	  <td><code>string</code></td>
+	  <td>&#10004;</td> 
+  </tr>
+  <tr>
+	  <td><code>dataset_name</code></td>
+	  <td>Name of Dataset</td>
+	  <td><code>string</code></td>
+	  <td></td> 
+  </tr>
+  <tr>
+	  <td><code>attributes</code></td>
+	  <td>Columns to be used for matching</td>
+	  <td><code>list</code></td>
+	  <td></td> 
+  </tr>
+</table>
+
+#### Ground Truth
+Attributes of key: `ground_truth`
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	  <td><code>separator</code></td>
+	  <td>Character separating values in csv</td>
+	  <td><code>char</code></td>
+	  <td>&#10004;</td> 
+  </tr>
+</table>
+
+
+#### Block Building
+Attributes of key: `block_building`
+
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Workflow</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	<td rowspan="2"><code>method</code></td>
+  	<td><code>StandardBlocking</code>
+		<code>QGramsBlocking</code>		  
+		<code>SuffixArraysBlocking</code>
+		<code>ExtendedSuffixArraysBlocking</code>
+		<code>ExtendedQGramsBlocking</code>		  
+  	</td>
+  	<td><code>string</code></td>
+  	<td><code>BlockingBasedWorkflow</code></td>
+	<td>&#10004;</td> 
+  </tr>
+  <tr>
+  	<td><code>EmbeddingsNNBlockBuilding</code>
+  	</td>
+  	<td><code>string</code></td>
+  	<td><code>EmbeddingsNNWorkflow</code></td>
+	<td>&#10004;</td> 
+  </tr>
+<tr>
+ <td><code>attributes_1</code><br><code>attributes_2</code></td>
+<td>Attributes to be used for block building</td>
+<td><code>list</code></td>
+<td><code>BlockingBasedWorkflow</code><code>EmbeddingsNNWorkflow</code></td>
+	<td></td> 
+  </tr>
+</table>
+
+Attributes of key: `params`
+
+<table>
+    <tr>
+        <th>Attributes</th>
+        <th>Name</th>
+        <th>Value Type</th>
+        <th>Default Value</th>
+        <th>Method</th>
+    </tr>
+    <tr>
+        <td rowspan="21"><code>params</code></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><code>StandardBlocking</code></td>
+    </tr>
+   <tr>
+        <td><code>qgrams</code></td>
+        <td><code>int</code></td>
+        <td>6</td>
+        <td rowspan="1"><code>QGramsBlocking</code></td>
+    </tr>
+    <tr>
+        <td><code>suffix_length</code></td>
+        <td><code>int</code></td>
+        <td>6</td>
+        <td rowspan="2"><code>SuffixArraysBlocking</code></td>
+    </tr>
+    <tr>
+        <td><code>max_block_size</code></td>
+        <td><code>int</code></td>
+        <td>53</td>
+    </tr>
+    <tr>
+        <td><code>suffix_length</code></td>
+        <td><code>int</code></td>
+        <td>6</td>
+        <td rowspan="2"><code>ExtendedSuffixArraysBlocking</code></td>
+    </tr>
+    <tr>
+        <td><code>max_block_size</code></td>
+        <td><code>int</code></td>
+        <td>39</td>
+    </tr>
+    <tr>
+        <td><code>qgrams</code></td>
+        <td><code>int</code></td>
+        <td>6</td>
+        <td rowspan="2"><code>ExtendedQGramsBlocking</code></td>
+    </tr>
+    <tr>
+        <td><code>threshold</code></td>
+        <td><code>float</code></td>
+        <td>0.95</td>
+    </tr>
+     <tr>
+        <td><code>vectorizer</code></td>
+        <td><code>['word2vec', 'fasttext', 'doc2vec', 'glove', 'bert', 'distilbert', 'roberta', 'xlnet', 'albert', 'smpnet', 'st5', 'sent_glove', 'sdistilroberta', 'sminilm']</code></td>
+        <td><code>smpnet</code></td>
+        <td rowspan="9"><code>EmbeddingsNNBlockBuilding</code></td>
+    </tr>
+    <tr>
+        <td><code>vector_size</code></td>
+        <td><code>int</code></td>
+        <td>300</td>
+    </tr>
+    <tr>
+        <td><code>num_of_clusters</code></td>
+        <td><code>int</code></td>
+        <td>5</td>
+    </tr>
+    <tr>
+        <td><code>top_k</code></td>
+        <td><code>int</code></td>
+        <td>30</td>
+    </tr>
+    <tr>
+        <td><code>max_word_embeddings_size</code></td>
+        <td><code>int</code></td>
+        <td>256</td>
+    </tr>
+    <tr>
+        <td><code>attributes_1</code></td>
+        <td><code>list</code></td>
+        <td>None</td>
+    </tr>
+    <tr>
+        <td><code>attributes_2</code></td>
+        <td><code>list</code></td>
+        <td>None</td>
+    </tr>
+    <tr>
+        <td><code>similarity_distance</code></td>
+        <td><code>['cosine', 'cosine_without_normalization', 'euclidean']</code></td>
+        <td><code>cosine</code></td>
+    </tr>
+    <tr>
+        <td><code>input_cleaned_blocks</code></td>
+        <td><code>list</code></td>
+        <td>None</td>
+    </tr>
+</table>
+
+
+#### Block Cleaning
+Attributes of key: `block_cleaning`
+
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Workflow</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	<td rowspan="1"><code>method</code></td>
+  	<td><code>BlockFiltering</code><br><code>BlockPurging</code>		  		  
+  	</td>
+  	<td><code>string</code></td>
+  	<td><code>BlockingBasedWorkflow</code></td>
+	<td>&#10004;</td> 
+  </tr>
+</table>
+
+Attributes of key: `params`
+
+<table>
+    <tr>
+        <th>Attributes</th>
+        <th>Name</th>
+        <th>Value Type</th>
+        <th>Default Value</th>
+        <th>Method</th>
+    </tr>
+    <tr>
+        <td rowspan="2"><code>params</code></td>
+        <td><code>ratio</code></td>
+        <td><code>float</code></td>
+        <td>0.8</td>
+        <td rowspan="1"><code>BlockFiltering</code></td>
+    </tr>
+    <tr>
+        <td><code>smoothing_factor</code></td>
+        <td><code>float</code></td>
+        <td>1.025</td>
+        <td rowspan="1"><code>BlockPurging</code></td>
+    </tr>
+</table>
+
+#### Comparison Cleaning
+Attributes of key: `comparison_cleaning`
+
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Workflow</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	<td rowspan="1"><code>method</code></td>
+  	<td><code>WeightedEdgePruning</code>
+<code>CardinalityEdgePruning</code>
+<code>CardinalityNodePruning</code>
+<code>ReciprocalCardinalityNodePruning</code>
+<code>WeightedNodePruning</code>
+<code>BLAST</code>
+<code>ReciprocalWeightedNodePruning</code>
+<code>ComparisonPropagation</code>		  		  
+  	</td>
+  	<td><code>string</code></td>
+  	<td><code>BlockingBasedWorkflow</code></td>
+	<td>&#10004;</td> 
+  </tr>
+</table>
+
+Attributes of key: `params`
+
+<table>
+    <tr>
+        <th>Attributes</th>
+        <th>Name</th>
+        <th>Value Type</th>
+        <th>Default Value</th>
+        <th>Method</th>
+    </tr>
+    <tr>
+        <td rowspan="2"><code>params</code></td>
+        <td><code>weighting_scheme</code></td>
+        <td><code>CN-CBS</code><br><code>CBS</code><br><code>SN-CBS</code><br><code>CNC</code><br><code>SNC</code><br><code>SND</code><br><code>CND</code><br><code>CNJ</code><br><code>SNJ</code><br><code>COSINE</code><br><code>DICE</code><br><code>ECBS</code><br><code>JS</code><br><code>EJS</code><br><code>X2</code></td>
+        <td><code>X2</code></td>
+        <td rowspan="1"><code>WeightedEdgePruning</code><br><code>CardinalityEdgePruning</code><br><code>CardinalityNodePruning</code><br><code>ReciprocalCardinalityNodePruning</code><br><code>WeightedNodePruning</code><br><code>BLAST</code><br><code>ReciprocalWeightedNodePruning</code><br></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td rowspan="1"><code>ComparisonPropagation</code></td>
+    </tr>
+</table>
+
+
+#### Entity Matching
+Attributes of key: `entity_matching`
+
+<table>
+  <tr>
+    <th>Attributes</th>
+    <th>Info</th>
+    <th>Value Type</th>
+    <th>Workflow</th>
+    <th>Required</th>
+  </tr>
+  <tr>
+	<td rowspan="1"><code>method</code></td>
+  	<td><code>EntityMatching</code>  	</td>
+  	<td><code>string</code></td>
+  	<td><code>BlockingBasedWorkflow</code></td>
+	<td>&#10004;</td> 
+  </tr>
+</table>
+
+Attributes of key: `params`
+
+<table>
+    <tr>
+        <th>Attributes</th>
+        <th>Name</th>
+        <th>Value Type</th>
+        <th>Default Value</th>
+        <th>Method</th>
+    </tr>
+    <tr>
+        <td rowspan="7"><code>params</code></td>
+        <td><code>metric</code></td>
+        <td><code>edit_distance</code><br><code>cosine</code><br><code>jaro</code><br><code>jaccard</code><br><code>generalized_jaccard</code><br><code>dice</code><br><code>TF-IDF</code><br><code>Frequency</code><br><code>PL2</code><br><code>BM25F</code><br><code>overlap_coefficient</code><br><code>sqeuclidean</code></td>
+        <td>dice</td>
+        <td rowspan="7"><code>EntityMatching</code></td>
+    </tr>
+    <tr>
+        <td><code>tokenizer</code></td>
+        <td><code>char_tokenizer</code><br><code>word_tokenizer</code><br><code>white_space_tokenizer</code><br><code>qgrams</code><br><code>standard</code><br><code>standard_multiset</code><br><code>qgrams_multiset</code></td>
+        <td>white_space_tokenizer</td>
+    </tr>
+    <tr>
+        <td><code>vectorizer</code></td>
+        <td><code>tfidf</code><br><code>tf</code><br><code>boolean</code></td>
+        <td>None</td>
+    </tr>
+    <tr>
+        <td><code>qgram</code></td>
+        <td><code>int</code></td>
+        <td>1</td>
+    </tr>
+    <tr>
+        <td><code>similarity_threshold</code></td>
+        <td><code>float</code></td>
+        <td>0.0</td>
+    </tr>
+    <tr>
+        <td><code>tokenizer_return_unique_values</code></td>
+        <td><code>bool</code></td>
+        <td>False</td>
+    </tr>
+    <tr>
+        <td><code>attributes</code></td>
+        <td><code>any</code></td>
+        <td>None</td>
+    </tr>
+</table>
+
+#### Clustering
 
-	**The tool developer needs to return the output JSON through the** `run(json)` **method in the above format.** The structure of the expected output is explained briefly below:
-	 - `message` : A generic message recorded as metadata of the task execution
-	 - `outputs` : The data objects generated by the tool execution which lie inside the MinIO Object store.
-	 - `metrics` : Any valuable or outstanding metrics calculated during the tool's execution
-	 - `status`:   A code defining the exit status of the tool execution. Conventionally linked to HTTP status codes. If the tool execution fails you may return a 500 or 424 or 409. 
 
-## `Makefile`
-This file bundles the logic of **building**, **tagging** and **pushing** the tool image. Its logic is nothing that should be concern the tool developer. The only thing that needs to be modified inside this file is the **repository name** and the **image name & tag**. For example, the `Makefile` at the top lines offers a variable holding this info:
-
-```bash
-IMGTAG=yourusername/yourimagereponame:yourversiontag
-```
-If someone (user: **jsmith**) wanted to push the image **footool:1.0.0** the above line should be modified as:
-```bash
-IMGTAG=jsmith/footool:1.0.0
-```
-More info about the building process may be found the **Usage** section.
-
-## `Dockerfile`
-
-The Dockerfile comprises the manifest upon which the tool image is created. Its logic is very simple but should not concern the tool developer. Its core responsibilities are:
-
-- Installing **Python** inside the Tool Image
-- Installing the libraries defined in `requirements.txt`
-- Setting the **execution entrypoint** followed by any container created upon the image.
-
-# Usage
-
-In this section we delve into the usage of the template from a generic scope focused on how to setup, use, adjust and build finally the desired tool image.
-
-
-## Install Dependencies
-
-If you have the following packages installed in your system:
-
--	`git`
--	`docker`
--	`docker.io`
--	`build-essential`
-
-you are good to go to the next step. If not please follow the next steps:
-
-### Updating the package and repositories
-
-```bash
-sudo apt-get update
-```
-
-### Installing `git`:
-```bash
-sudo apt install git-all
-```
-
-### Installing `docker` and `docker.io`:
-```bash
-sudo apt install docker docker.io
-```
-
-### Installing `build-essential`:
-```bash
-sudo apt install build-essential
-```
-
-### Windows? No problem!
-
-You may find detailed instructions in the links down below:
-
-<a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git#:~:text=Installing%20on%20Windows" target="_blank">Install Git in Windows</a>
-
-<a href="https://www.simplilearn.com/tutorials/docker-tutorial/install-docker-on-windows" target="_blank">Install Docker in Windows</a>
-
-<a href="https://stackoverflow.com/questions/32127524/how-to-install-and-use-make-in-windows" target="_blank">Install Make (used to run the Makefile) in Windows</a>
-
-## Your free copy to take home!
-You may fetch this template to modify it locally by running the following `git clone` in your desired location:
-
-```bash
-git clone https://github.com/stelar-eu/klms-tool-template
-```
-
-## Setting up DockerHub Account & Credentials
-
-Firstly you need to create an account in DockerHub by following this link https://app.docker.com/signup . 
-**Be sure about your username** as this will be the name prepending to your repositories (Think DockerHub as GitHub). The registration process is easy and simple. 
-
-After you succesfully create an account in DockerHub be sure to login on your local terminal by running:
-
-```bash
-sudo docker login
-```
-A prompt will appear asking for `username` and `password`. The credentials **are the ones you used for account registration in DockerHub**.
-
-After that your local Docker Account is set up!
-
-## Modify template up to Tool prerequisites
-
-Now you are ready to start embedding your tool into the template. The files that need to be modified are :
-
-- `main.py` as explained above in the **Directory Structure** section. Explanative comments are also available inside the script
-- `requirements.txt` recording your tool python library names 
-- `Makefile` with your appropriate **docker hub repository** and **image name**.
-
-
-## Build it!
-
-After you are satisfied with your tool embedding and you are ready to make it available to STELAR partners you may simply run:
-
-```bash
-make 
-```
-
-The `Makefile` will handle all the complicated steps needed to build the image and push it to your repository in DockerHub.
-
-
-
-> Before hitting `make` make sure you have run `docker login` in order to authenticate/authorize for DockerHub.
-
-
-
-## Great! Your tool is now published
-Thanks for your effort! Your tool is now ready to be integrated inside the KLMS cluster.
