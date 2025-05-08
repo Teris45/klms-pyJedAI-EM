@@ -101,7 +101,7 @@ Concering input, additional info must be provided.
   <tr>
   	  <td><code>block_building</code></td>
 	  <td>Block building method and parameters used only for <code>BlockingBasedWorkflow</code>, <code>EmbeddingsNNWorkflow</code> 
-	  <td><a href="./docs/block-building.md">block_building_object</a></td>
+	  <td><a href="./docs/block_building.md">block_building_object</a></td>
 	  <td>&#10004;</td> 
   </tr>
   <tr>
