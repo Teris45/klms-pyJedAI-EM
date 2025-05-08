@@ -201,9 +201,12 @@ def run(json_input):
 
         if params["workflow"] == "BlockingBasedWorkflow":
             workflow = get_BlockingBasedWorkflow(data, params)
-        elif params["workflow"] == "EmbeddingsNNWorkFlow": 
+        elif params["workflow"] == "EmbeddingsNNWorkflow": 
             params = load_embeddings(mc, input, params) 
             workflow = get_EmbeddingsNNWorkFlow(data,params)
+        elif params["workflow"] == "JoinWorkflow": 
+            workflow = get_JoinWorkflow(data, params)    
+        
 
         workflow.run(data, verbose=True, workflow_step_tqdm_disable=False)
         execution_time = workflow.workflow_exec_time

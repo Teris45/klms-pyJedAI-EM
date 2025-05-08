@@ -128,6 +128,12 @@ Concering input, additional info must be provided.
 	  <td><a href="https://github.com/Teris45/pyjedai2klms/blob/main/docs/clustering.md">clustering-object</a></td>
 	  <td></td> 
   </tr>
+  <tr>
+    <td><code>join</code></td>
+	  <td>Join method and parameters used only for <code>JoinWorkflow</code> </td> 
+	  <td><a href="https://github.com/Teris45/pyjedai2klms/blob/main/docs/join.md">join-object</a></td>
+	  <td>&#10004;</td> 
+  </tr>
 		
 		
 </table>
@@ -236,13 +242,36 @@ Attributes of key: `ground_truth`
 ```
 ```
 "parameters" : {           
-        "workflow": "EmbeddingsNNWorkFlow",
+        "workflow": "EmbeddingsNNWorkflow",
         "block_building": 
         {
             "method" : "EmbeddingsNNBlockBuilding",
             "params" : {
                 "vectorizer" : "st5"
             }
+        },
+        "clustering": {
+            "method" : "UniqueMappingClustering",
+            "params" : {
+                "similarity_threshold": 0.4
+            }
+        }
+     ....     
+    }    
+```   
+```
+"parameters" : {           
+        "workflow": "JoinWorkflow",
+        "block_building": 
+        {
+            "method" : "TopKJoin",
+            "params" : {
+                "metrics" : "cosine",
+                "tokenization": "qgrams",
+                "reverse_order": "False"
+            },
+            "attributes_1": ["name"],
+            "attributes_2" : ["name"]
         },
         "clustering": {
             "method" : "UniqueMappingClustering",

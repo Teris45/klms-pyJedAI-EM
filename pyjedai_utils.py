@@ -1,6 +1,6 @@
 from pyjedai.datamodel import Data
 import pandas as pd
-from pyjedai.workflow import  EmbeddingsNNWorkFlow
+from pyjedai.workflow import  EmbeddingsNNWorkFlow, JoinWorkflow
 from pyjedai.vector_based_blocking import EmbeddingsNNBlockBuilding
 from pyjedai.block_building import *
 from pyjedai.block_cleaning import *
@@ -115,7 +115,11 @@ def load_input(mc: MinioClient, input: dict, parameters: dict) -> Data:
                             data_dict[data_dict_key] = parameters[dataset][key]
             elif dataset == 'ground_truth':
                 data_dict['skip_ground_truth_processing'] = False
-
+    
+    # gt = pd.read_csv('data/ccer/D2/gt.csv', sep='|')
+    # data_dict['ground_truth'] = gt
+    # data_dict['skip_ground_truth_processing'] = False
+    
 
     if isinstance(data_dict['ground_truth'], pd.DataFrame):
         columns = data_dict['ground_truth'].columns
@@ -131,9 +135,7 @@ def load_input(mc: MinioClient, input: dict, parameters: dict) -> Data:
                 & 
                 data_dict['ground_truth'][columns[1]].isin(data_dict['dataset_1'][data_dict['id_column_name_1']])
             ]
-            
-    
-                
+
     return Data(**data_dict)                   
                         
 
@@ -228,7 +230,9 @@ Read the docs and see how each function is called.
     block_building_dict = {'method': EmbeddingsNNBlockBuilding}
 
     if 'params' in block_building_parameters: 
-        block_building_parameters = block_building_parameters['params']
+        for key in block_building_parameters['params']:
+            block_building_parameters[key] = block_building_parameters['params'][key]
+        del block_building_parameters['params']
     # __init__ 
     block_building_dict['params'] = {'vectorizer': block_building_parameters['vectorizer'] if 'vectorizer' in block_building_parameters else 'smpnet'}
         
@@ -238,12 +242,11 @@ Read the docs and see how each function is called.
         "num_of_clusters": 5,
         "top_k": 30,
         "max_word_embeddings_size": 256,
-        "attributes_1": None,
-        "attributes_2": None,
         "input_cleaned_blocks": None,
         "similarity_distance": 'cosine',
         "custom_pretrained_model": None,
     }
+
 
     for key in block_building_dict['exec_params']:
         if key in block_building_parameters: 
@@ -259,6 +262,13 @@ Read the docs and see how each function is called.
         if block_building_dict['exec_params'][key] == None:
             del block_building_dict['exec_params'][key]
 
+    print(block_building_parameters)
+    if "attributes_1" in block_building_parameters:
+        block_building_dict['attributes_1'] = block_building_parameters['attributes_1']
+    if "attributes_2" in block_building_parameters:
+        block_building_dict['attributes_2'] = block_building_parameters['attributes_2']
+    
+        
     workflow_parameters['block_building'] = block_building_dict
     clustering_parameters = parameters['clustering']
 
@@ -275,7 +285,36 @@ The workflow-parameters are : {json.dumps(dict_to_str(workflow_parameters), inde
 
 
 
+def get_JoinWorkflow(data: Data, parameters: dict) -> JoinWorkflow:
+    print(f"""
+Parameters given as : {json.dumps(parameters, indent=4)}
+The parameters will be checked and processed to input them correctly to pyJedAI Embeddings-NN Workflow.
+Read the docs and see how each function is called.
+""")
 
+
+    workflow_parameters = {'name' : parameters.get('name')}
+    if not workflow_parameters['name']:
+        del workflow_parameters['name']
+        
+    join_parameters = get_new_dict('join', parameters['join'])
+    
+    if 'reverse_order' in parameters['join']['params']:
+        join_parameters['exec_params'] = {
+            "reverse_order" : parameters['join']['params']['reverse_order']
+        }
+    
+    workflow_parameters['join'] = join_parameters
+    clustering_parameters = parameters['clustering']
+    if (new_dict := get_new_dict(workflow_step='clustering', old_dict=clustering_parameters)): 
+        workflow_parameters['clustering'] = new_dict
+
+    print(f""" 
+After processing input...
+The workflow-parameters are : {json.dumps(dict_to_str(workflow_parameters), indent=4)} 
+    """)
+
+    return JoinWorkflow(**workflow_parameters)
 
 
 

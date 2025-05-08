@@ -3,7 +3,7 @@ from pyjedai.block_cleaning import *
 from pyjedai.clustering import *
 from pyjedai.matching import * 
 from pyjedai.comparison_cleaning import *
-
+from pyjedai.joins import *
 
 
 methods_dict ={
@@ -27,7 +27,8 @@ methods_dict ={
                    "ExactClustering", 'CenterClustering',"BestMatchClustering", 
                    "MergeCenterClustering", "CorrelationClustering", "CutClustering", 
                    "MarkovClustering", "KiralyMSMApproximateClustering",
-                   "RicochetSRClustering", "RowColumnClustering"]
+                   "RicochetSRClustering", "RowColumnClustering"],
+    "join" : ["EJoin", "TopKJoin"]
 
 }
 
@@ -60,5 +61,7 @@ methods_mapping = {
     "MarkovClustering": MarkovClustering,
     "KiralyMSMApproximateClustering": KiralyMSMApproximateClustering,
     "RicochetSRClustering": RicochetSRClustering,
-    "RowColumnClustering": RowColumnClustering                 
+    "RowColumnClustering": RowColumnClustering,
+    "EJoin" : EJoin,
+    "TopKJoin": TopKJoin                 
 }
