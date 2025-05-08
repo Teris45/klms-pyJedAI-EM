@@ -298,7 +298,7 @@ Attributes of key: `ground_truth`
     <td><code>metrics</code></td>
     <td>Creates a file with F1, Recall, Precision metrics if ground truth exists<br><code>.csv</code> format</td>
     <td><code>path</code></td>
-    <td>&#10004;</td>
+    <td></td>
   </tr>
   <tr>
     <td><code>pairs</code></td>
