@@ -107,21 +107,28 @@ Concering input, additional info must be provided.
   <tr>
   	  <td><code>block_cleaning</code></td>
 	  <td>Block cleaning method and parameters used only for <code>BlockingBasedWorkflow</code> <br>More than one <code>block_cleaning</code> methods can be used 
-	  <td><a href="#block-cleaning">block_cleaning_object</a> or <code>list</code> of <a href="block-cleaning">block_cleaning_object</a></td>
+	  <td><a href="https://github.com/Teris45/pyjedai2klms/blob/main/docs/block_cleaning.md">block_cleaning_object</a> or <code>list</code> of <a href="https://github.com/Teris45/pyjedai2klms/blob/main/docs/block_cleaning.md">block_cleaning_object</a></td>
 	  <td></td> 
   </tr>
   <tr>
     <td><code>comparison_cleaning</code></td>
 	  <td>Comparison cleaning method and parameters used only for <code>BlockingBasedWorkflow</code> </td> 
-	  <td><a href="#comparison-cleaning">comparison-cleaning-object</a></td>
+	  <td><a href="https://github.com/Teris45/pyjedai2klms/blob/main/docs/comparison_cleaning.md">comparison-cleaning-object</a></td>
 	  <td></td> 
   </tr>
   <tr>
     <td><code>entity_matching</code></td>
 	  <td>Entity Matching method and parameters used only for <code>BlockingBasedWorkflow</code> </td> 
-	  <td><a href="#entity-matching">comparison-cleaning-object</a></td>
+	  <td><a href="https://github.com/Teris45/pyjedai2klms/blob/main/docs/entity_matching.md">entity-matching-object</a></td>
 	  <td>&#10004;</td> 
   </tr>
+  <tr>
+    <td><code>clustering</code></td>
+	  <td>Clustering method and parameters used only for <code>BlockingBasedWorkflow</code>, <code>EmbeddingsNNWorkflow</code> or <code>JoinWorkflow</code> </td> 
+	  <td><a href="https://github.com/Teris45/pyjedai2klms/blob/main/docs/clustering.md">clustering-object</a></td>
+	  <td></td> 
+  </tr>
+		
 		
 </table>
 
@@ -179,178 +186,5 @@ Attributes of key: `ground_truth`
 	  <td>&#10004;</td> 
   </tr>
 </table>
-
-
-
-#### Block Cleaning
-Attributes of key: `block_cleaning`
-
-<table>
-  <tr>
-    <th>Attributes</th>
-    <th>Info</th>
-    <th>Value Type</th>
-    <th>Workflow</th>
-    <th>Required</th>
-  </tr>
-  <tr>
-	<td rowspan="1"><code>method</code></td>
-  	<td><code>BlockFiltering</code><br><code>BlockPurging</code>		  		  
-  	</td>
-  	<td><code>string</code></td>
-  	<td><code>BlockingBasedWorkflow</code></td>
-	<td>&#10004;</td> 
-  </tr>
-</table>
-
-Attributes of key: `params`
-
-<table>
-    <tr>
-        <th>Attributes</th>
-        <th>Name</th>
-        <th>Value Type</th>
-        <th>Default Value</th>
-        <th>Method</th>
-    </tr>
-    <tr>
-        <td rowspan="2"><code>params</code></td>
-        <td><code>ratio</code></td>
-        <td><code>float</code></td>
-        <td>0.8</td>
-        <td rowspan="1"><code>BlockFiltering</code></td>
-    </tr>
-    <tr>
-        <td><code>smoothing_factor</code></td>
-        <td><code>float</code></td>
-        <td>1.025</td>
-        <td rowspan="1"><code>BlockPurging</code></td>
-    </tr>
-</table>
-
-#### Comparison Cleaning
-Attributes of key: `comparison_cleaning`
-
-<table>
-  <tr>
-    <th>Attributes</th>
-    <th>Info</th>
-    <th>Value Type</th>
-    <th>Workflow</th>
-    <th>Required</th>
-  </tr>
-  <tr>
-	<td rowspan="1"><code>method</code></td>
-  	<td><code>WeightedEdgePruning</code>
-<code>CardinalityEdgePruning</code>
-<code>CardinalityNodePruning</code>
-<code>ReciprocalCardinalityNodePruning</code>
-<code>WeightedNodePruning</code>
-<code>BLAST</code>
-<code>ReciprocalWeightedNodePruning</code>
-<code>ComparisonPropagation</code>		  		  
-  	</td>
-  	<td><code>string</code></td>
-  	<td><code>BlockingBasedWorkflow</code></td>
-	<td>&#10004;</td> 
-  </tr>
-</table>
-
-Attributes of key: `params`
-
-<table>
-    <tr>
-        <th>Attributes</th>
-        <th>Name</th>
-        <th>Value Type</th>
-        <th>Default Value</th>
-        <th>Method</th>
-    </tr>
-    <tr>
-        <td rowspan="2"><code>params</code></td>
-        <td><code>weighting_scheme</code></td>
-        <td><code>CN-CBS</code><br><code>CBS</code><br><code>SN-CBS</code><br><code>CNC</code><br><code>SNC</code><br><code>SND</code><br><code>CND</code><br><code>CNJ</code><br><code>SNJ</code><br><code>COSINE</code><br><code>DICE</code><br><code>ECBS</code><br><code>JS</code><br><code>EJS</code><br><code>X2</code></td>
-        <td><code>X2</code></td>
-        <td rowspan="1"><code>WeightedEdgePruning</code><br><code>CardinalityEdgePruning</code><br><code>CardinalityNodePruning</code><br><code>ReciprocalCardinalityNodePruning</code><br><code>WeightedNodePruning</code><br><code>BLAST</code><br><code>ReciprocalWeightedNodePruning</code><br></td>
-    </tr>
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td rowspan="1"><code>ComparisonPropagation</code></td>
-    </tr>
-</table>
-
-
-#### Entity Matching
-Attributes of key: `entity_matching`
-
-<table>
-  <tr>
-    <th>Attributes</th>
-    <th>Info</th>
-    <th>Value Type</th>
-    <th>Workflow</th>
-    <th>Required</th>
-  </tr>
-  <tr>
-	<td rowspan="1"><code>method</code></td>
-  	<td><code>EntityMatching</code>  	</td>
-  	<td><code>string</code></td>
-  	<td><code>BlockingBasedWorkflow</code></td>
-	<td>&#10004;</td> 
-  </tr>
-</table>
-
-Attributes of key: `params`
-
-<table>
-    <tr>
-        <th>Attributes</th>
-        <th>Name</th>
-        <th>Value Type</th>
-        <th>Default Value</th>
-        <th>Method</th>
-    </tr>
-    <tr>
-        <td rowspan="7"><code>params</code></td>
-        <td><code>metric</code></td>
-        <td><code>edit_distance</code><br><code>cosine</code><br><code>jaro</code><br><code>jaccard</code><br><code>generalized_jaccard</code><br><code>dice</code><br><code>TF-IDF</code><br><code>Frequency</code><br><code>PL2</code><br><code>BM25F</code><br><code>overlap_coefficient</code><br><code>sqeuclidean</code></td>
-        <td>dice</td>
-        <td rowspan="7"><code>EntityMatching</code></td>
-    </tr>
-    <tr>
-        <td><code>tokenizer</code></td>
-        <td><code>char_tokenizer</code><br><code>word_tokenizer</code><br><code>white_space_tokenizer</code><br><code>qgrams</code><br><code>standard</code><br><code>standard_multiset</code><br><code>qgrams_multiset</code></td>
-        <td>white_space_tokenizer</td>
-    </tr>
-    <tr>
-        <td><code>vectorizer</code></td>
-        <td><code>tfidf</code><br><code>tf</code><br><code>boolean</code></td>
-        <td>None</td>
-    </tr>
-    <tr>
-        <td><code>qgram</code></td>
-        <td><code>int</code></td>
-        <td>1</td>
-    </tr>
-    <tr>
-        <td><code>similarity_threshold</code></td>
-        <td><code>float</code></td>
-        <td>0.0</td>
-    </tr>
-    <tr>
-        <td><code>tokenizer_return_unique_values</code></td>
-        <td><code>bool</code></td>
-        <td>False</td>
-    </tr>
-    <tr>
-        <td><code>attributes</code></td>
-        <td><code>any</code></td>
-        <td>None</td>
-    </tr>
-</table>
-
-#### Clustering
 
 
