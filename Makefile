@@ -1,6 +1,6 @@
 
 DOCKER=docker
-IMGTAG=teris45/pyjedai_em:0.1
+IMGTAG=teris45/pyjedai_em:latest
 IMGPATH=.
 DOCKERFILE=$(IMGPATH)/Dockerfile
 
