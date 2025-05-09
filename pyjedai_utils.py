@@ -115,7 +115,8 @@ def load_input(mc: MinioClient, input: dict, parameters: dict) -> Schema:
                             data_dict[data_dict_key] = parameters[dataset][key]
             elif dataset == 'ground_truth':
                 data_dict['skip_ground_truth_processing'] = False
-
+    if "matching_type" in parameters:
+        data_dict['matching_type'] = parameters['matching_type'].upper()
     return Schema(**data_dict)                   
                         
 
