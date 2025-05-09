@@ -208,9 +208,7 @@ Attributes of key: `ground_truth`
         },                
         "workflow": "BlockingBasedWorkflow",
         "block_building": {
-              "method": "StandardBlocking",
-              "attributes_1" : ["name"],
-              "attributes_2" : ["first_name"]
+              "method": "StandardBlocking"
         },
         "block_cleaning" : [
             {
@@ -265,9 +263,7 @@ Attributes of key: `ground_truth`
                 "metrics" : "cosine",
                 "tokenization": "qgrams",
                 "reverse_order": "False"
-            },
-            "attributes_1": ["name"],
-            "attributes_2" : ["name"]
+            }
         },
         "clustering": {
             "method" : "UniqueMappingClustering",
