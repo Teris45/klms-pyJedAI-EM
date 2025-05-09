@@ -89,7 +89,8 @@ Concering input, additional info must be provided.
 	  <td><a href="#ground-truth">ground_truth_object</a></td>
 	  <td></td> 
   </tr>
-  <tr><code>matching_type</code></td>
+  <tr>
+  <td><code>matching_type</code></td>
   <td><code>contnet</code>: matching based on rows<br>
   <code>composite</code>: matching based on attributes and rows<br>
   <code>schema</code>: matching based on attributes</td>
