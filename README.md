@@ -26,7 +26,7 @@ The following README will guide you through the whole process of Entity Matching
   </tr>
   <tr>
     <td><code>ground_truth</code></td>
-    <td><code>.csv</code> format</td>
+    <td><code>.csv</code> or <code>.json</code> format<br>JSON file must be a list</td>
     <td><code>list</code></td>
     <td></td>
   </tr>
@@ -88,6 +88,13 @@ Concering input, additional info must be provided.
 	  <td>Provide info for dataset to be processed correctly</td>
 	  <td><a href="#ground-truth">ground_truth_object</a></td>
 	  <td></td> 
+  </tr>
+  <tr><code>matching_type</code></td>
+  <td><code>contnet</code>: matching based on rows<br>
+  <code>composite</code>: matching based on attributes and rows<br>
+  <code>schema</code>: matching based on attributes</td>
+  <td><code>schema</code> : default
+  <td></td>
   </tr>
   <tr>
   	  <td><code>workflow</code></td>
@@ -157,21 +164,9 @@ Attributes of keys: `dataset_1`, `dataset_2`
 	  <td>&#10004;</td> 
   </tr>
   <tr>
-	  <td><code>id_column_name</code></td>
-	  <td>Name of Dataset's id column</td>
-	  <td><code>string</code></td>
-	  <td>&#10004;</td> 
-  </tr>
-  <tr>
 	  <td><code>dataset_name</code></td>
 	  <td>Name of Dataset</td>
 	  <td><code>string</code></td>
-	  <td></td> 
-  </tr>
-  <tr>
-	  <td><code>attributes</code></td>
-	  <td>Columns to be used for matching</td>
-	  <td><code>list</code></td>
 	  <td></td> 
   </tr>
 </table>
