@@ -1,4 +1,5 @@
 from pyjedai.datamodel import Data
+from pyjedai.schema.schema_model import Schema
 import pandas as pd
 from pyjedai.workflow import  EmbeddingsNNWorkFlow, JoinWorkflow
 from pyjedai.vector_based_blocking import EmbeddingsNNBlockBuilding
@@ -72,24 +73,20 @@ def check_dataset(dataset: dict, dataset_name: str) -> None:
         raise Exception(f"On {dataset_name} {missing_keys} was not given")
 
 # Check if input was correctly provided
-def load_input(mc: MinioClient, input: dict, parameters: dict) -> Data:
+def load_input(mc: MinioClient, input: dict, parameters: dict) -> Schema:
     if 'dataset_1' not in input:
         raise Exception("No dataset_1 was given")
-    
-    
+    if 'dataset_2' not in input:
+        raise Exception("No dataset_2 was given")
+        
     data_dict = { 
-            "id_column_name_1": None,
-            "attributes_1" : None,
-            "dataset_name_1" : None,
-            "dataset_2" : None,
-            "id_column_name_2" : None,
-            "attributes_2" : None,
-            "dataset_name_2" : None,
-            "ground_truth" : None,
-            "skip_ground_truth_processing" : True 
-            }
-    
-    
+        "dataset_name_1" : None,
+        "dataset_name_2" : None,
+        "ground_truth" : None,
+        "skip_ground_truth_processing" : True, 
+        "matching_type": None
+    }
+
     for dataset in ['dataset_1', 'dataset_2', 'ground_truth']:
         if dataset in input and dataset not in parameters:
             raise Exception(f"Must provide required_keys in parameters for {dataset} : {required_keys[dataset]}")
@@ -97,11 +94,14 @@ def load_input(mc: MinioClient, input: dict, parameters: dict) -> Data:
             
             check_dataset(parameters[dataset], dataset)
             
+            if dataset=='ground_truth' and parameters['ground_truth']['is_json']: 
+                mc.get_object(s3_path=input[dataset][0], local_path=f".local/{dataset}.json")
+                df = pd.read_json(f".local/{dataset}.json")
+            else:
+                mc.get_object(s3_path=input[dataset][0], local_path=f".local/{dataset}.csv")
+                df = pd.read_csv(f".local/{dataset}.csv", sep=parameters[dataset]["separator"], engine='python', na_filter=False)
 
-            mc.get_object(s3_path=input[dataset][0], local_path=f".local/{dataset}.csv")
-            
-            
-            df = pd.read_csv(f".local/{dataset}.csv", sep=parameters[dataset]["separator"], engine='python', na_filter=False)
+
             data_dict[dataset] = df.copy()
             
             if dataset != 'ground_truth': 
@@ -115,28 +115,8 @@ def load_input(mc: MinioClient, input: dict, parameters: dict) -> Data:
                             data_dict[data_dict_key] = parameters[dataset][key]
             elif dataset == 'ground_truth':
                 data_dict['skip_ground_truth_processing'] = False
-    
-    # gt = pd.read_csv('data/ccer/D2/gt.csv', sep='|')
-    # data_dict['ground_truth'] = gt
-    # data_dict['skip_ground_truth_processing'] = False
-    
 
-    if isinstance(data_dict['ground_truth'], pd.DataFrame):
-        columns = data_dict['ground_truth'].columns
-        if isinstance(data_dict['dataset_2'], pd.DataFrame):
-            data_dict['ground_truth'] = data_dict['ground_truth'][
-                data_dict['ground_truth'][columns[0]].isin(data_dict['dataset_1'][data_dict['id_column_name_1']])
-                & 
-                data_dict['ground_truth'][columns[1]].isin(data_dict['dataset_2'][data_dict['id_column_name_2']])
-            ]
-        else: 
-            data_dict['ground_truth'] = data_dict['ground_truth'][
-                data_dict['ground_truth'][columns[0]].isin(data_dict['dataset_1'][data_dict['id_column_name_1']])
-                & 
-                data_dict['ground_truth'][columns[1]].isin(data_dict['dataset_1'][data_dict['id_column_name_1']])
-            ]
-
-    return Data(**data_dict)                   
+    return Schema(**data_dict)                   
                         
 
 

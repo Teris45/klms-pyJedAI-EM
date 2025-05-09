@@ -1,13 +1,12 @@
 {
     "message": "Tool Executed Succesfully",
     "metrics": {
-        "total_execution_time": 6.3821022510528564,
-        "total_pairs": 1060
+        "total_execution_time": 0.025937557220458984,
+        "total_pairs": 0,
+        "F1 %": 0,
+        "Precision %": 0,
+        "Recall %": 0
     },
     "status": "success",
-    "outputs": {
-        "metrics": "s3://klms-bucket/pyjedai-output/metrics.csv",
-        "pairs": "s3://klms-bucket/pyjedai-output/pairs.csv",
-        "entities": "s3://klms-bucket/pyjedai-output/entities_df.csv"
-    }
+    "output": {}
 }

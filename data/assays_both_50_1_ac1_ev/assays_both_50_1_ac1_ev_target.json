@@ -1,0 +1,38 @@
+{
+    "assays_assay_id": {
+        "type": "integer"
+    },
+    "assays_tid": {
+        "type": "integer"
+    },
+    "assays_relationship_type": {
+        "type": "varchar(1)"
+    },
+    "assays_confidence_score": {
+        "type": "smallint unsigned"
+    },
+    "assays_curated_by": {
+        "type": "varchar(32)"
+    },
+    "assays_src_id": {
+        "type": "smallint"
+    },
+    "assays_src_assay_id": {
+        "type": "varchar(50)"
+    },
+    "assays_chembl_id": {
+        "type": "varchar(20)"
+    },
+    "assays_cell_id": {
+        "type": "integer"
+    },
+    "assays_bao_format": {
+        "type": "varchar(11)"
+    },
+    "assays_tissue_id": {
+        "type": "integer"
+    },
+    "assays_variant_id": {
+        "type": "integer unsigned"
+    }
+}

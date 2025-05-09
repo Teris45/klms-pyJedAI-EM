@@ -1,0 +1,10 @@
+{
+    "matches": [
+        {
+            "source_table": "assays_both_50_1_ac1_ev_source",
+            "source_column": "assay_id",
+            "target_table": "assays_both_50_1_ac1_ev_target",
+            "target_column": "assays_assay_id"
+        }
+    ]
+}
