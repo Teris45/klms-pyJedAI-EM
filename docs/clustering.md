@@ -18,6 +18,13 @@ Attributes of key: `clustering`
   	<td><code>BlockingBasedWorkflow</code> <code>EmbeddingsNNWorkflow</code> <code>JoinWorkflow</code> </td>
 	<td>&#10004;</td> 
   </tr>
+	<tr>
+ <td><code>params</code></td>
+<td>See below which parameters can be used for each method</td>
+<td><code>list</code></td>
+  	<td><code>BlockingBasedWorkflow</code> <code>EmbeddingsNNWorkflow</code> <code>JoinWorkflow</code> </td>
+	<td></td> 
+  </tr>
 </table>
 
 Attributes of key: `params`
