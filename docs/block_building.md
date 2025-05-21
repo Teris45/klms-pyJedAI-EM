@@ -36,6 +36,14 @@ Attributes of key: `block_building`
 <td><code>BlockingBasedWorkflow</code><code>EmbeddingsNNWorkflow</code></td>
 	<td></td> 
   </tr>
+<tr>
+ <td><code>params</code></td>
+<td>See below which parameters can be used for each method</td>
+<td><code>list</code></td>
+<td><code>BlockingBasedWorkflow</code><code>EmbeddingsNNWorkflow</code></td>
+	<td></td> 
+  </tr>
+ 
 </table>
 
 Attributes of key: `params`
