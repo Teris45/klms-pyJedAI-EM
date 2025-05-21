@@ -23,6 +23,14 @@ Attributes of key: `join`
     <td><code>JoinWorkflow</code></td>
 	<td></td> 
   </tr>
+		  <tr>
+ <td><code>params</code></td>
+<td>See below which parameters can be used for each method</td>
+<td><code>list</code></td>
+    <td><code>JoinWorkflow</code></td>
+	<td></td> 
+  </tr>
+
 </table>
 
 Attributes of key: `params`
