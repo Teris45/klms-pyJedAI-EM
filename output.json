@@ -1,13 +1,27 @@
 {
     "message": "Tool Executed Succesfully",
     "metrics": {
-        "total_execution_time": 6.3821022510528564,
-        "total_pairs": 1060
+        "detected_links": 1707,
+        "no_of_contains": 411,
+        "verification_time": 10527,
+        "no_of_crosses": 0,
+        "verified_pairs": 901,
+        "no_of_covered_by": 0,
+        "precision": 0.7192008879023307,
+        "exceptions": 0,
+        "indexing_time": 13,
+        "no_of_covers": 411,
+        "source_geometries": 13,
+        "no_of_equals": 0,
+        "interlinked_geometries": 648,
+        "no_of_within": 0,
+        "recall": "Infinity",
+        "no_of_overlaps": 237,
+        "qualifying_pairs": 0,
+        "no_of_touches": 0,
+        "target_geometries": 607,
+        "no_of_intersects": 648,
+        "progressive_geometry_recall": "Infinity"
     },
-    "status": "success",
-    "outputs": {
-        "metrics": "s3://klms-bucket/pyjedai-output/metrics.csv",
-        "pairs": "s3://klms-bucket/pyjedai-output/pairs.csv",
-        "entities": "s3://klms-bucket/pyjedai-output/entities_df.csv"
-    }
+    "status": "success"
 }

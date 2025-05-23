@@ -1,0 +1,16 @@
+{
+    "source": {
+        "path": ".local/source",
+        "data_type": "CSV",
+        "geo_index": 0,
+        "attributes_first_row": true
+    },
+    "target": {
+        "path": ".local/target",
+        "data_type": "CSV",
+        "geo_index": 0,
+        "attributes_first_row": true
+    },
+    "algorithm": "R-Tree",
+    "output_path": ".local/results.nt"
+}

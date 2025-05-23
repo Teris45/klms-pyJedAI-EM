@@ -1,0 +1,17 @@
+{
+    "source": {
+        "path": "../data/regions_gr.csv",
+        "data_type": "CSV",
+        "geo_index": 0,
+        "attributes_first_row" : true
+    },
+    "target": {
+        "path": "../data/wildlife_sanctuaries.csv",
+        "data_type": "CSV",
+        "geo_index": 0,
+        "attributes_first_row" : true
+    },
+    "output_path" : "../data/results.csv",
+    "algorithm": "R-Tree"
+    
+}

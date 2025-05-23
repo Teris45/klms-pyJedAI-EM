@@ -1,0 +1,7 @@
+[
+        {
+            "source_column": "assay_id",
+            "target_column": "assays_assay_id"
+        }
+]
+

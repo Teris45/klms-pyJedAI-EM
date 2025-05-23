@@ -1,55 +1,38 @@
 
 {
     "minio": {
-        "id" : "",
-        "key" : "",
-        "skey": ""
-        endpoint_url": "https://minio.stelar.gr"
+        "id" : "1",
+        "key" : "2",
+        "skey": "3",
+        "endpoint_url": "https://minio.stelar.gr"
     },
     "inputs": {
-        "dataset_1" : [
-            "s3://klms-bucket/raw-data/abt.csv"	
+        "source" : [
+            "s3://klms-bucket/jedai-spatial/regions_gr.csv"	
         ],
-        "dataset_2" : [
-            "s3://klms-bucket/raw-data/buy.csv"	
+        "target" : [
+            "s3://klms-bucket/jedai-spatial/wildlife_sanctuaries.csv"	
         ]
     },
     "parameters" : {
-        "dataset_1" : {
-            "separator" : "|",
-            "id_column_name" : "id",
-            "dataset_name" : "abt"                    
+        "source" : {
+            "data_type" : "csv",
+            "geo_index": 0,
+            "attributes_first_row" : true         
         },
-        "dataset_2" : {
-            "separator" : "|", 
-            "id_column_name" : "id",
-            "dataset_name" : "buy"
+        "target" : {
+            "data_type" : "csv",
+            "geo_index": 0,
+            "attributes_first_row" : true         
         },
-        "ground_truth" : {
-            "separator" : "|"
-        },                
-        "workflow": "EmbeddingsNNWorkFlow",
-        "block_building": 
-        {
-            "method" : "EmbeddingsNNBlockBuilding",
-            "params" : {
-                "vectorizer" : "st5"
-            }
-        },
-        "clustering": {
-            "method" : "UniqueMappingClustering",
-            "params" : {
-                "similarity_threshold": 0.4
-            }
-        }
-        
-          
+        "algorithm": "R-Tree"                
     },       
-
     "outputs": {
-        "metrics" : "s3://klms-bucket/pyjedai-output/metrics.csv",
-        "pairs" : "s3://klms-bucket/pyjedai-output/pairs.csv",
-        "entities" : "s3://klms-bucket/pyjedai-output/entities_df.csv"
+        "metrics" : "s3://klms-bucket/jedai-spatial/output_metrics.json",
+        "pairs" : "s3://klms-bucket/jedai-spatial/output_pairs.nt"
     }
+
 }
+
+
 
