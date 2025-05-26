@@ -34,7 +34,7 @@ printf "\n"
 echo "$result" > input.json
 
 # Execute the tool and force stdout to be unbuffered
-python -u main.py input.json output.json
+python3 -u main.py input.json output.json
 
 # Perform the second curl request with replacements and store the response in a variable
 output_json=$(<output.json)  # Read content of output.json file into a variable

@@ -45,7 +45,7 @@ def run(json_input):
         with open('.local/input.json', 'w+') as json_file:
             json.dump(java_dict, json_file, indent=4)
 
-        jar_path = 'serial/target/geospatialinterlinking-1.0-SNAPSHOT-jar-with-dependencies.jar'
+        jar_path = 'jedai.jar'
         
         # With arguments
         subprocess.run(["java", "-cp", jar_path, 'jsonWorkflow.JsonWorkflow', ".local/input.json", ".local/metrics.json"])
@@ -64,6 +64,10 @@ def run(json_input):
 
         json_output = {
                 'message': 'Tool Executed Succesfully',
+                'output': {
+                    'metrics': output['metrics'] if 'metrics' in output else None,
+                    'pairs': output['pairs'] if 'pairs' in output else None,
+                },
                 'metrics': metrics_dict,
                 'status': "success",
         }
